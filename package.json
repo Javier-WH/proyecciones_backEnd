@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch ./src/backEnd/index.js"
+    "start": "node ./src/backEnd/index.js",
+    "dev": "node --watch ./src/backEnd/index.js",
+    "syncDB": "node ./src/backEnd/dataBase/CLI/syncDB.js",
+    "testDB": "node ./src/backEnd/dataBase/CLI/testConnection.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,14 @@
     "express": "^4.19.2",
     "express-static": "^1.2.6",
     "joi": "^17.13.3",
+    "mysql2": "^3.11.0",
+    "sequelize": "^6.37.3",
     "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "standard": "^17.1.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
   }
 }

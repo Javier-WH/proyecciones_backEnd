@@ -1,57 +1,58 @@
-import { Server } from 'socket.io';
-import { teachersList } from '../../dev/placeHolderData.js';
-import { subjectsList } from '../../dev/placeHolderSubjects.js';
-import  validateTeacherData  from '../utils/validateTeacherData.js';
+import { Server } from 'socket.io'
+import { teachersList } from '../../dev/placeHolderData.js'
+import { subjectsList } from '../../dev/placeHolderSubjects.js'
+import validateTeacherData from '../utils/validateTeacherData.js'
+import validateSubjectData from '../utils/validateSubject.js'
 
- const setupSocket = (server) => {
+const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: '*',
-    },
-  });
+      origin: '*'
+    }
+  })
 
   // Array de profesores
   let teachers = {
     q1: [...teachersList],
     q2: [...teachersList],
-    q3: [...teachersList],
-  };
+    q3: [...teachersList]
+  }
 
-  //array de asignaturas
-  let subjects = [...subjectsList];
+  // array de asignaturas
+  let subjects = [...subjectsList]
 
   // Conexión WebSocket
   io.on('connection', (socket) => {
-    console.log('Usuario conectado');
+    console.log('Usuario conectado')
 
     // Enviar el array de profesores y asignaturas al cliente
-    socket.emit('updateTeachers', teachers);
-    socket.emit('updateSubjects', subjects);
+    socket.emit('updateTeachers', teachers)
+    socket.emit('updateSubjects', subjects)
 
     // Escuchar eventos de actualización de profesores
     socket.on('updateTeachers', (newTeachers) => {
-      const validName = validateTeacherData(newTeachers);
+      const validName = validateTeacherData(newTeachers)
       if (validName.error) {
-        console.log(validName.error.message);
-        return;
+        console.log(validName.error.message)
+        return
       }
-      teachers = newTeachers;
-      io.emit('updateTeachers', teachers);
-    });
+      teachers = newTeachers
+      io.emit('updateTeachers', teachers)
+    })
 
     // Escuchar eventos de actualización de asignaturas
     socket.on('updateSubjects', (newSubjects) => {
-      /*const validName = validateTeacherData(newSubjects);
+      const validName = validateSubjectData(newSubjects)
       if (validName.error) {
-        console.log(validName.error.message);
-        return;
-      }*/
-      subjects = newSubjects;
-      io.emit('updateSubjects', subjects);
-    });
-  });
+        console.log(validName.error.message)
+        return
+      }
+      subjects = newSubjects
+      io.emit('updateSubjects', subjects)
+    })
+  })
 
-  return io;
-};
+  return io
+}
 
-export default setupSocket;
+export default setupSocket
