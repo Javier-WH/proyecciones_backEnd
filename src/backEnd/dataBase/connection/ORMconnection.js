@@ -1,3 +1,6 @@
+/**
+ * Este archivo es para realizar la coneccion a la base de datos con sequelize
+ */
 import dotenv from 'dotenv'
 import { Sequelize } from 'sequelize'
 dotenv.config()
@@ -45,7 +48,9 @@ export async function testConection () {
   try {
     await connection.authenticate()
     console.log('La base de datos se conecto correctamente')
+    return true
   } catch (error) {
     console.error('Unable to connect to the database:', error)
+    return false
   }
 }
