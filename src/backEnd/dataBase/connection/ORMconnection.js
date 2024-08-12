@@ -5,52 +5,27 @@ import dotenv from 'dotenv'
 import { Sequelize } from 'sequelize'
 dotenv.config()
 
-let connection = null
-
-function ORMconnection () {
-  const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      dialect: process.env.DB_DIALECT || 'mysql',
-      port: process.env.DB_PORT
-    }
-  )
-  return sequelize
-}
-
-export default async function getConection () {
-  if (!connection) {
-    connection = await ORMconnection()
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT || 'mysql',
+    port: process.env.DB_PORT,
+    logging: false
   }
-
-  return connection
+)
+try {
+  await sequelize.authenticate()
+  console.log('La base de datos se conecto correctamente')
+} catch (error) {
+  console.error('Unable to connect to the database:', error)
 }
+
+export default sequelize
 
 export function closeConection () {
-  if (!connection) return
-  connection.close()
-  connection = null
+  sequelize.close()
   console.log('La base de datos se cerro correctamente')
-}
-
-export async function resetConection () {
-  await closeConection()
-  await getConection()
-}
-
-export async function testConection () {
-  if (!connection) {
-    await getConection()
-  }
-  try {
-    await connection.authenticate()
-    console.log('La base de datos se conecto correctamente')
-    return true
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-    return false
-  }
 }

@@ -6,10 +6,14 @@ import configureCors from './config/cors/corsConfig.js'
 import Routes from './routes/routes.js'
 import setupSocket from './socket/socket.js'
 import getServerIP from './utils/serverIP.js'
+import { createTables } from './dataBase/create/createTables.js'
 
 dotenv.config()
 const app = express()
 const server = createServer(app)
+
+// base de datos
+createTables()
 
 // cors
 configureCors(app)
@@ -26,6 +30,6 @@ setupSocket(server)
 const port = process.env.PORT || 3000
 const host = process.env.IP || '127.0.0.1'
 server.listen(port, host, () => {
-  console.clear()
+  // console.clear()
   console.log(`Servidor corriendo en el socket http://${getServerIP()}:${port}`)
 })

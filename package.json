@@ -6,9 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/backEnd/index.js",
-    "dev": "node --watch ./src/backEnd/index.js",
-    "syncDB": "node ./src/backEnd/dataBase/CLI/syncDB.js",
-    "testDB": "node ./src/backEnd/dataBase/CLI/testConnection.js"
+    "dev": "node --watch ./src/backEnd/index.js"
   },
   "keywords": [],
   "author": "",
