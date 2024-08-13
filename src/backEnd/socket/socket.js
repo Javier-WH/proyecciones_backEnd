@@ -3,6 +3,39 @@ import { teachersList } from '../../dev/placeHolderData.js'
 import { subjectsList } from '../../dev/placeHolderSubjects.js'
 import validateTeacherData from '../utils/validateTeacherData.js'
 import validateSubjectData from '../utils/validateSubject.js'
+import getTeacherList from '../dataBase/querys/teachers/getTeacherList.js'
+import getSubjectList from '../dataBase/querys/subjects/getSubjectList.js'
+
+// Array de profesores
+let teachers = {
+  q1: [...teachersList],
+  q2: [...teachersList],
+  q3: [...teachersList]
+}
+
+// array de asignaturas
+let subjects = [...subjectsList]
+
+export function setTeacherList () {
+  getTeacherList().then((data) => {
+    // console.log(data)
+    teachers = {
+      q1: [...data],
+      q2: [...data],
+      q3: [...data]
+    }
+  })
+}
+
+export function setSubjectList () {
+  getSubjectList().then((data) => {
+    // console.log(data)
+    subjects = [...data]
+  })
+}
+
+setTeacherList()
+setSubjectList()
 
 const setupSocket = (server) => {
   const io = new Server(server, {
@@ -10,16 +43,6 @@ const setupSocket = (server) => {
       origin: '*'
     }
   })
-
-  // Array de profesores
-  let teachers = {
-    q1: [...teachersList],
-    q2: [...teachersList],
-    q3: [...teachersList]
-  }
-
-  // array de asignaturas
-  let subjects = [...subjectsList]
 
   // Conexión WebSocket
   io.on('connection', (socket) => {

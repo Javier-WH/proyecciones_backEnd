@@ -42,11 +42,11 @@ Teacher.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    perfil_id: {
+    perfil_name_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'perfiles',
+        model: 'perfil_names',
         key: 'id'
       }
     },

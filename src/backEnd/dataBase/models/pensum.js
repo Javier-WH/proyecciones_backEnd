@@ -25,6 +25,10 @@ Pensum.init(
         key: 'id'
       }
     },
+    hours: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     quarter: {
       type: DataTypes.JSON,
       allowNull: false

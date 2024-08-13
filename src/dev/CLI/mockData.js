@@ -7,6 +7,7 @@ import Pesum from '../../backEnd/dataBase/models/pensum.js'
 import Perfil from '../../backEnd/dataBase/models/perfil.js'
 import Teacher from '../../backEnd/dataBase/models/teachers.js'
 import Gender from '../../backEnd/dataBase/models/gender.js'
+import { getRandomNumber } from '../../backEnd/utils/utils.js'
 
 // mock data
 import teachers from './placeHolders/teachersMockData.js'
@@ -78,8 +79,17 @@ async function generatePesumData () {
     })
 
     const pensumData = addPnf.map(subject => {
-      const quarter = [Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 3) + 1]
+      const quarterTypes = [
+        [1, 2, 3],
+        [1],
+        [2],
+        [3],
+        [1, 2],
+        [2, 3]
+      ]
+      const quarter = quarterTypes[Math.floor(Math.random() * quarterTypes.length)]
       subject.quarter = JSON.stringify(quarter)
+      subject.hours = getRandomNumber(6, 18)
       return subject
     })
 
@@ -115,11 +125,12 @@ async function generatePerfilData () {
 async function generateTeachesData () {
   try {
     const contractTypesID = await Contracts.findAll({ attributes: ['id'], raw: true })
-    const perfilsID = await Perfil.findAll({ attributes: ['id'], raw: true })
+    // const perfilsNamesID = await PerfilNames.findAll({ attributes: ['id'], raw: true })
+    const perfilsNamesID = await Perfil.findAll({ attributes: ['perfil_name_id'], raw: true })
     const gendersID = await Gender.findAll({ attributes: ['id'], raw: true })
     const teachersData = teachers.map(teacher => {
       teacher.contractTypes_id = contractTypesID[Math.floor(Math.random() * contractTypesID.length)].id
-      teacher.perfil_id = perfilsID[Math.floor(Math.random() * perfilsID.length)].id
+      teacher.perfil_name_id = perfilsNamesID[Math.floor(Math.random() * perfilsNamesID.length)].perfil_name_id
       teacher.gender_id = gendersID[Math.floor(Math.random() * gendersID.length)].id
       return teacher
     })
