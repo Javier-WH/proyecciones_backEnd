@@ -22,9 +22,13 @@ Teacher.init(
       allowNull: false,
       unique: true
     },
-    gender: {
-      type: DataTypes.STRING,
-      allowNull: false
+    gender_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'genders',
+        key: 'id'
+      }
     },
     contractTypes_id: {
       type: DataTypes.UUID,

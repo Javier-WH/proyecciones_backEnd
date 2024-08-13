@@ -3,17 +3,30 @@ import Contracts from '../../backEnd/dataBase/models/contractType.js'
 import Pnf from '../../backEnd/dataBase/models/pnf.js'
 import Subject from '../../backEnd/dataBase/models/subjects.js'
 import PerfilNames from '../../backEnd/dataBase/models/perfilNames.js'
+import Pesum from '../../backEnd/dataBase/models/pensum.js'
+import Perfil from '../../backEnd/dataBase/models/perfil.js'
+import Teacher from '../../backEnd/dataBase/models/teachers.js'
+import Gender from '../../backEnd/dataBase/models/gender.js'
+
+// mock data
+import teachers from './placeHolders/teachersMockData.js'
+import gender from './placeHolders/genderMockData.js'
+import contract from './placeHolders/contractMockData.js'
+import pnf from './placeHolders/pnfMockData.js'
+import subject from './placeHolders/subjectMockData.js'
+import perfil from './placeHolders/perfilMockData.js'
+
+async function generateGenderData () {
+  try {
+    await Gender.bulkCreate(gender)
+    console.log('Generos creados')
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 async function generateContractsData () {
-  const contract = [
-    { id: crypto.randomUUID(), contractType: 'Tiempo Completo', hours: '16' },
-    { id: crypto.randomUUID(), contractType: 'Medio Tiempo', hours: '12' },
-    { id: crypto.randomUUID(), contractType: 'Dedicación Exclusiva', hours: '18' },
-    { id: crypto.randomUUID(), contractType: 'Contratado', hours: '6' }
-  ]
-
   try {
-    await Contracts.destroy({ where: { id: { [Op.ne]: null } } })
     await Contracts.bulkCreate(contract)
     console.log('Tipos de contratos creados')
   } catch (error) {
@@ -22,15 +35,7 @@ async function generateContractsData () {
 }
 
 async function generatePnfData () {
-  const pnf = [
-    { id: crypto.randomUUID(), name: 'Informática' },
-    { id: crypto.randomUUID(), name: 'Administración' },
-    { id: crypto.randomUUID(), name: 'Agroalimentación' },
-    { id: crypto.randomUUID(), name: 'Medicina Veterinaria' }
-  ]
-
   try {
-    await Pnf.destroy({ where: { id: { [Op.ne]: null } } })
     await Pnf.bulkCreate(pnf)
     console.log('Pnfs creados')
   } catch (error) {
@@ -39,22 +44,7 @@ async function generatePnfData () {
 }
 
 async function generateSubjectsData () {
-  const subject = [
-    { id: crypto.randomUUID(), name: 'Matematicas' },
-    { id: crypto.randomUUID(), name: 'Tecnologías de la Información' },
-    { id: crypto.randomUUID(), name: 'Arquitectura del computador' },
-    { id: crypto.randomUUID(), name: 'Ingles' },
-    { id: crypto.randomUUID(), name: 'Electronica' },
-    { id: crypto.randomUUID(), name: 'Electiva' },
-    { id: crypto.randomUUID(), name: 'FrameWork' },
-    { id: crypto.randomUUID(), name: 'Programación' },
-    { id: crypto.randomUUID(), name: 'Proyecto Sociotecnico' },
-    { id: crypto.randomUUID(), name: 'Sistemas Operativos' }
-
-  ]
-
   try {
-    await Subject.destroy({ where: { id: { [Op.ne]: null } } })
     await Subject.bulkCreate(subject)
     console.log('Materias creadas')
   } catch (error) {
@@ -63,14 +53,7 @@ async function generateSubjectsData () {
 }
 
 async function generatePerfilsData () {
-  const perfil = [
-    { id: crypto.randomUUID(), name: 'Ingeniero en Sistemas' },
-    { id: crypto.randomUUID(), name: 'Economista' },
-    { id: crypto.randomUUID(), name: 'Medico Veterinario' }
-  ]
-
   try {
-    await PerfilNames.destroy({ where: { id: { [Op.ne]: null } } })
     await PerfilNames.bulkCreate(perfil)
     console.log('Perfiles creados')
   } catch (error) {
@@ -78,11 +61,101 @@ async function generatePerfilsData () {
   }
 }
 
+async function generatePesumData () {
+  try {
+    const subjectsId = await Subject.findAll({ attributes: ['id'], raw: true })
+    const addSubjects = subjectsId.map(subject => {
+      return {
+        id: crypto.randomUUID(),
+        subject_id: subject.id
+      }
+    })
+
+    const pnfID = await Pnf.findAll({ attributes: ['id'], raw: true })
+    const addPnf = addSubjects.map(subject => {
+      subject.pnf_id = pnfID[Math.floor(Math.random() * pnfID.length)].id
+      return subject
+    })
+
+    const pensumData = addPnf.map(subject => {
+      const quarter = [Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 3) + 1, Math.floor(Math.random() * 3) + 1]
+      subject.quarter = JSON.stringify(quarter)
+      return subject
+    })
+
+    await Pesum.bulkCreate(pensumData)
+    console.log('Pensums creados')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function generatePerfilData () {
+  try {
+    const subjectsId = await Subject.findAll({ attributes: ['id'], raw: true })
+    const addSubjects = subjectsId.map(subject => {
+      return {
+        id: crypto.randomUUID(),
+        subject_id: subject.id
+      }
+    })
+
+    const perfilNamesID = await PerfilNames.findAll({ attributes: ['id'], raw: true })
+    const perfilNames = addSubjects.map(perfil => {
+      perfil.perfil_name_id = perfilNamesID[Math.floor(Math.random() * perfilNamesID.length)].id
+      return perfil
+    })
+    await Perfil.bulkCreate(perfilNames)
+    console.log('Perfiles creados')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function generateTeachesData () {
+  try {
+    const contractTypesID = await Contracts.findAll({ attributes: ['id'], raw: true })
+    const perfilsID = await Perfil.findAll({ attributes: ['id'], raw: true })
+    const gendersID = await Gender.findAll({ attributes: ['id'], raw: true })
+    const teachersData = teachers.map(teacher => {
+      teacher.contractTypes_id = contractTypesID[Math.floor(Math.random() * contractTypesID.length)].id
+      teacher.perfil_id = perfilsID[Math.floor(Math.random() * perfilsID.length)].id
+      teacher.gender_id = gendersID[Math.floor(Math.random() * gendersID.length)].id
+      return teacher
+    })
+
+    await Teacher.bulkCreate(teachersData)
+    console.log('Profesores creados')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function deleData () {
+  try {
+    await Teacher.destroy({ where: { id: { [Op.ne]: null } } })
+    await Perfil.destroy({ where: { id: { [Op.ne]: null } } })
+    await PerfilNames.destroy({ where: { id: { [Op.ne]: null } } })
+    await Pesum.destroy({ where: { id: { [Op.ne]: null } } })
+    await Pnf.destroy({ where: { id: { [Op.ne]: null } } })
+    await Gender.destroy({ where: { id: { [Op.ne]: null } } })
+    await Subject.destroy({ where: { id: { [Op.ne]: null } } })
+    await PerfilNames.destroy({ where: { id: { [Op.ne]: null } } })
+    await Contracts.destroy({ where: { id: { [Op.ne]: null } } })
+  } catch (error) {
+    console.log(error)
+  }
+}
 async function mockData () {
+  await deleData()
+  await generateGenderData()
   await generateContractsData()
   await generatePnfData()
   await generateSubjectsData()
   await generatePerfilsData()
+  await generatePesumData()
+  await generatePerfilData()
+  await generateTeachesData()
 }
 
 mockData()
