@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/backEnd/index.js",
-    "dev": "node --watch ./src/backEnd/index.js"
+    "dev": "node --watch ./src/backEnd/index.js",
+    "mock": "node ./src/dev/CLI/mockData.js",
+    "db:drop": "node ./src/dev/CLI/syncTables.js db:drop",
+    "db:create": "node ./src/dev/CLI/syncTables.js db:create",
+    "db:sync": "node ./src/dev/CLI/syncTables.js db:sync"
   },
   "keywords": [],
   "author": "",

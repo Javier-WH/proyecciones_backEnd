@@ -1,33 +1,50 @@
 import sequelize from '../connection/ORMconnection.js'
 import { DataTypes, Model } from 'sequelize'
 
-class Pensum extends Model { }
-Pensum.init(
+class Teacher extends Model { }
+Teacher.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
-    pnf_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'pnfs',
-        key: 'id'
-      }
-    },
-    subject_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'subjects',
-        key: 'id'
-      }
-    },
-    quarter: {
-      type: DataTypes.JSON,
+    name: {
+      type: DataTypes.STRING,
       allowNull: false
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    ci: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    contractTypes_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'contract_types',
+        key: 'id'
+      }
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    perfil_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'perfiles',
+        key: 'id'
+      }
     },
     active: {
       type: DataTypes.BOOLEAN,
@@ -36,11 +53,11 @@ Pensum.init(
   },
   {
     sequelize,
-    modelName: 'pensums',
+    modelName: 'teachers',
     timestamps: false,
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci'
   }
 )
 
-export default Pensum
+export default Teacher

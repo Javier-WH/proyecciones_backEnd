@@ -1,13 +1,13 @@
 import tableList from './tables.js'
 
 export const createTables = async () => {
-  tableList.forEach(async (table) => {
+  for (const table of tableList) {
     await table.sync()
-  })
+  }
 }
 
 export const dropTables = async () => {
-  tableList.forEach(async (table) => {
+  for (const table of [...tableList].reverse()) {
     await table.drop()
-  })
+  }
 }

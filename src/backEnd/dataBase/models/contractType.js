@@ -1,32 +1,20 @@
 import sequelize from '../connection/ORMconnection.js'
 import { DataTypes, Model } from 'sequelize'
 
-class Pensum extends Model { }
-Pensum.init(
+class ContractType extends Model { }
+ContractType.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
-    pnf_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'pnfs',
-        key: 'id'
-      }
+    contractType: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    subject_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'subjects',
-        key: 'id'
-      }
-    },
-    quarter: {
-      type: DataTypes.JSON,
+    hours: {
+      type: DataTypes.STRING,
       allowNull: false
     },
     active: {
@@ -36,11 +24,11 @@ Pensum.init(
   },
   {
     sequelize,
-    modelName: 'pensums',
+    modelName: 'contract_types',
     timestamps: false,
     charset: 'utf8mb4',
     collate: 'utf8mb4_unicode_ci'
   }
 )
 
-export default Pensum
+export default ContractType

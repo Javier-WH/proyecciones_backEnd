@@ -7,6 +7,7 @@ import Routes from './routes/routes.js'
 import setupSocket from './socket/socket.js'
 import getServerIP from './utils/serverIP.js'
 import { createTables } from './dataBase/create/createTables.js'
+import setTableRelations from './dataBase/relations/tableRelations.js'
 
 dotenv.config()
 const app = express()
@@ -14,6 +15,7 @@ const server = createServer(app)
 
 // base de datos
 createTables()
+setTableRelations()
 
 // cors
 configureCors(app)

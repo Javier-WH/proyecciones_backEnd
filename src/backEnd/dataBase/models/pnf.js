@@ -22,7 +22,9 @@ Pnf.init(
   {
     sequelize,
     modelName: 'pnfs',
-    timestamps: false
+    timestamps: false,
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   }
 )
 
