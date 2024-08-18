@@ -1,20 +1,20 @@
 import { Server } from 'socket.io'
-import { teachersList } from '../../dev/placeHolderData.js'
-import { subjectsList } from '../../dev/placeHolderSubjects.js'
 import validateTeacherData from '../utils/validateTeacherData.js'
 import validateSubjectData from '../utils/validateSubject.js'
 import getTeacherList from '../dataBase/querys/teachers/getTeacherList.js'
 import getSubjectList from '../dataBase/querys/subjects/getSubjectList.js'
 
+let io = null
+
 // Array de profesores
 let teachers = {
-  q1: [...teachersList],
-  q2: [...teachersList],
-  q3: [...teachersList]
+  q1: [],
+  q2: [],
+  q3: []
 }
 
 // array de asignaturas
-let subjects = [...subjectsList]
+let subjects = []
 
 export function setTeacherList () {
   getTeacherList().then((data) => {
@@ -24,6 +24,7 @@ export function setTeacherList () {
       q2: [...data],
       q3: [...data]
     }
+    io?.emit('updateTeachers', teachers)
   })
 }
 
@@ -31,14 +32,12 @@ export function setSubjectList () {
   getSubjectList().then((data) => {
     // console.log(data)
     subjects = [...data]
+    io?.emit('updateSubjects', subjects)
   })
 }
 
-setTeacherList()
-setSubjectList()
-
-const setupSocket = (server) => {
-  const io = new Server(server, {
+export default function setupSocket (server) {
+  io = new Server(server, {
     cors: {
       origin: '*'
     }
@@ -78,4 +77,5 @@ const setupSocket = (server) => {
   return io
 }
 
-export default setupSocket
+setTeacherList()
+setSubjectList()

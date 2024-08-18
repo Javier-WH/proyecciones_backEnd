@@ -12,7 +12,10 @@ Subjects.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: {
+        name: 'unique_name',
+        collate: 'utf8mb4_0900_ai_ci' // Use a case-insensitive collation
+      }
     },
     active: {
       type: DataTypes.BOOLEAN,

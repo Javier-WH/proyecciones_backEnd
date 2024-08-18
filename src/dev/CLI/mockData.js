@@ -19,6 +19,8 @@ import perfil from './placeHolders/perfilMockData.js'
 
 async function generateGenderData () {
   try {
+    const genders = await Gender.findAll()
+    if (genders.length !== 0) return
     await Gender.bulkCreate(gender)
     console.log('Generos creados')
   } catch (error) {
@@ -28,6 +30,8 @@ async function generateGenderData () {
 
 async function generateContractsData () {
   try {
+    const contacts = await Contracts.findAll()
+    if (contacts.length !== 0) return
     await Contracts.bulkCreate(contract)
     console.log('Tipos de contratos creados')
   } catch (error) {
@@ -37,6 +41,8 @@ async function generateContractsData () {
 
 async function generatePnfData () {
   try {
+    const pnfs = await Pnf.findAll()
+    if (pnfs.length !== 0) return
     await Pnf.bulkCreate(pnf)
     console.log('Pnfs creados')
   } catch (error) {
@@ -46,6 +52,8 @@ async function generatePnfData () {
 
 async function generateSubjectsData () {
   try {
+    const subjetcs = await Subject.findAll()
+    if (subjetcs.length !== 0) return
     await Subject.bulkCreate(subject)
     console.log('Materias creadas')
   } catch (error) {
@@ -55,6 +63,8 @@ async function generateSubjectsData () {
 
 async function generatePerfilsData () {
   try {
+    const perfilNames = await PerfilNames.findAll()
+    if (perfilNames.length !== 0) return
     await PerfilNames.bulkCreate(perfil)
     console.log('Perfiles creados')
   } catch (error) {
@@ -64,6 +74,9 @@ async function generatePerfilsData () {
 
 async function generatePesumData () {
   try {
+    const pensums = await Pesum.findAll()
+    if (pensums.length !== 0) return
+
     const subjectsId = await Subject.findAll({ attributes: ['id'], raw: true })
     const addSubjects = subjectsId.map(subject => {
       return {
@@ -102,6 +115,9 @@ async function generatePesumData () {
 
 async function generatePerfilData () {
   try {
+    const perlis = await Perfil.findAll()
+    if (perlis.length !== 0) return
+
     const subjectsId = await Subject.findAll({ attributes: ['id'], raw: true })
     const addSubjects = subjectsId.map(subject => {
       return {
@@ -124,8 +140,10 @@ async function generatePerfilData () {
 
 async function generateTeachesData () {
   try {
+    const _teachers = await Teacher.findAll()
+    if (_teachers.length !== 0) return
+
     const contractTypesID = await Contracts.findAll({ attributes: ['id'], raw: true })
-    // const perfilsNamesID = await PerfilNames.findAll({ attributes: ['id'], raw: true })
     const perfilsNamesID = await Perfil.findAll({ attributes: ['perfil_name_id'], raw: true })
     const gendersID = await Gender.findAll({ attributes: ['id'], raw: true })
     const teachersData = teachers.map(teacher => {
@@ -134,7 +152,6 @@ async function generateTeachesData () {
       teacher.gender_id = gendersID[Math.floor(Math.random() * gendersID.length)].id
       return teacher
     })
-
     await Teacher.bulkCreate(teachersData)
     console.log('Profesores creados')
   } catch (error) {
@@ -158,7 +175,10 @@ async function deleData () {
   }
 }
 async function mockData () {
-  await deleData()
+  const flags = process.argv
+  if (flags.includes('-force')) {
+    await deleData()
+  }
   await generateGenderData()
   await generateContractsData()
   await generatePnfData()

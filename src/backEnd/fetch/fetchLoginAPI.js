@@ -6,7 +6,7 @@ import fetchResponse from './fetchResponse.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const url = `${process.env.API_URL || 'http://127.0.0.1:8000'}/login`
+const url = `${process.env.API_URL || 'http://0.0.0.0:8000/api/v1'}/login`
 const method = 'POST'
 const headers = {
   'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default async function fetchLogin () {
   } catch (error) {
     return fetchResponse({
       error: true,
-      message: error.message,
+      message: 'Error al realizar el login en la API de SAGA-> ' + error,
       data: null
     })
   }

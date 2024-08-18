@@ -26,12 +26,10 @@ Pensum.init(
       }
     },
     hours: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     quarter: {
-      type: DataTypes.JSON,
-      allowNull: false
+      type: DataTypes.JSON
     },
     active: {
       type: DataTypes.BOOLEAN,
