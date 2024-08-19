@@ -11,7 +11,6 @@ Pensum.init(
     },
     pnf_id: {
       type: DataTypes.UUID,
-      allowNull: false,
       references: {
         model: 'pnfs',
         key: 'id'
@@ -19,7 +18,6 @@ Pensum.init(
     },
     subject_id: {
       type: DataTypes.UUID,
-      allowNull: false,
       references: {
         model: 'subjects',
         key: 'id'
@@ -41,7 +39,13 @@ Pensum.init(
     modelName: 'pensums',
     timestamps: false,
     charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci'
+    collate: 'utf8mb4_unicode_ci',
+    indexes: [
+      {
+        unique: true,
+        fields: ['pnf_id', 'subject_id']
+      }
+    ]
   }
 )
 
