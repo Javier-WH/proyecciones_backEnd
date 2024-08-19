@@ -14,7 +14,7 @@ Subjects.init(
       allowNull: false,
       unique: {
         name: 'unique_name',
-        collate: 'utf8mb4_0900_ai_ci' // Use a case-insensitive collation
+        collate: 'utf8mb4_0900_ai_ci'
       }
     },
     active: {

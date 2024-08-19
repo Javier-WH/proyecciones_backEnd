@@ -4,7 +4,12 @@ import Subjects from '../models/subjects.js'
 export default async function sycnSagaSubjects () {
   const sagaSubjects = await fethSubjectAPI()
 
-  const subjectList = sagaSubjects.map(item => item.description.trim()) // hay que normalizar los datos por que la tabla ucs no esta normalizada
+  if (sagaSubjects === null) {
+    console.log('No se han podido sincronizar las materias')
+    return
+  }
+
+  const subjectList = sagaSubjects.map(item => item.description.trim())
     .filter((value, index, self) => self.indexOf(value) === index)
     .map(subject => {
       return {

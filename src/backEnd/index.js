@@ -8,6 +8,7 @@ import setupSocket from './socket/socket.js'
 import getServerIP from './utils/serverIP.js'
 import { createTables } from './dataBase/create/createTables.js'
 import setTableRelations from './dataBase/relations/tableRelations.js'
+import syncSagaTables from './dataBase/sycnSagaDB/syncSagaTables.js'
 
 dotenv.config()
 const app = express()
@@ -16,6 +17,7 @@ const server = createServer(app)
 // base de datos
 createTables()
 setTableRelations()
+syncSagaTables()
 
 // cors
 configureCors(app)

@@ -17,6 +17,9 @@ Pnf.init(
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
+    },
+    saga_id: {
+      type: DataTypes.BIGINT
     }
   },
   {

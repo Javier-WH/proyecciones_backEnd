@@ -2,11 +2,8 @@ import Subjects from '../../models/subjects.js'
 import Pensums from '../../models/pensum.js'
 import Pnfs from '../../models/pnf.js'
 import { Sequelize } from 'sequelize'
-import sycnSagaSubjects from '../../sycnSagaDB/sycnSagaSubjects.js'
 
 export default async function getSubjectList () {
-  await sycnSagaSubjects()
-
   const result = await Pensums.findAll({
     attributes: [
       ['subject_id', 'id'],
@@ -14,7 +11,6 @@ export default async function getSubjectList () {
       'hours',
       [Sequelize.col('pnf.name'), 'pnf'],
       'quarter'
-
     ],
     include: [
       {
