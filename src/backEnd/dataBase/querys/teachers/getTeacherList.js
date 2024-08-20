@@ -1,7 +1,7 @@
-import Teacher from '../../models/teachers.js'
-import Genders from '../../models/gender.js'
-import ContractType from '../../models/contractType.js'
-import Perfil from '../../models/perfil.js'
+import Teacher from '#models/teachers.js'
+import Genders from '#models/gender.js'
+import ContractType from '#models/contractType.js'
+import Perfil from '#models/perfil.js'
 import { Sequelize } from 'sequelize'
 
 async function getTeacherList (active = 1) {

@@ -1,8 +1,8 @@
 import { Server } from 'socket.io'
-import validateTeacherData from '../utils/validateTeacherData.js'
-import validateSubjectData from '../utils/validateSubject.js'
-import getTeacherList from '../dataBase/querys/teachers/getTeacherList.js'
-import getSubjectList from '../dataBase/querys/subjects/getSubjectList.js'
+import validateTeacherData from '#utils/validateTeacherData.js'
+import validateSubjectData from '#utils/validateSubject.js'
+import getTeacherList from '#querys/teachers/getTeacherList.js'
+import getSubjectList from '#querys/subjects/getSubjectList.js'
 
 let io = null
 

@@ -1,5 +1,5 @@
-import fethSubjectAPI from '../../fetch/fethSubjectsAPI.js'
-import Subjects from '../models/subjects.js'
+import fethSubjectAPI from '#fetch/fethSubjectsAPI.js'
+import Subjects from '#models/subjects.js'
 
 export default async function sycnSagaSubjects () {
   const sagaSubjects = await fethSubjectAPI()

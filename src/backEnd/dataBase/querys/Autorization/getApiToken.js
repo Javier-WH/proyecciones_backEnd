@@ -1,4 +1,4 @@
-import fetchLogin from '../../../fetch/fetchLoginAPI.js'
+import fetchLogin from '#fetch/fetchLoginAPI.js'
 export default async function getApiToken () {
   const loginData = await fetchLogin()
 

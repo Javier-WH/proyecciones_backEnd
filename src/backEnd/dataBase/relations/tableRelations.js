@@ -1,12 +1,12 @@
 // Importa los modelos
-import Pensum from '../models/pensum.js'
-import Pnf from '../models/pnf.js'
-import Subject from '../models/subjects.js'
-import Gender from '../models/gender.js'
-import Teacher from '../models/teachers.js'
-import ContractType from '../models/contractType.js'
-import PerfilNames from '../models/perfilNames.js'
-import Perfil from '../models/perfil.js'
+import Pensum from '#models/pensum.js'
+import Pnf from '#models/pnf.js'
+import Subject from '#models/subjects.js'
+import Gender from '#models/gender.js'
+import Teacher from '#models/teachers.js'
+import ContractType from '#models/contractType.js'
+import PerfilNames from '#models/perfilNames.js'
+import Perfil from '#models/perfil.js'
 
 export default function setTableRelations () {
   // Establece las asociaciones entre pnf y subject atraves de la tabla pensum

@@ -1,8 +1,8 @@
 // este archivo es para sincronizar la tabla Pensum con la tabla Ucs de SAGA
-import fethSubjectAPI from '../../fetch/fethSubjectsAPI.js'
-import Pensum from '../models/pensum.js'
-import Pnf from '../models/pnf.js'
-import Subjects from '../models/subjects.js'
+import fethSubjectAPI from '#fetch/fethSubjectsAPI.js'
+import Pensum from '#models/pensum.js'
+import Pnf from '#models/pnf.js'
+import Subjects from '#models/subjects.js'
 
 export default async function syncSagaUcs () {
   const sagaSubjects = await fethSubjectAPI()

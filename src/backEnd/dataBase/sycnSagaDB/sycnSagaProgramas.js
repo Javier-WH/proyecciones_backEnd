@@ -1,6 +1,5 @@
-import fethProgramasAPI from '../../fetch/fetchProgramasAPI.js'
-import Pnf from '../models/pnf.js'
-
+import fethProgramasAPI from '#fetch/fetchProgramasAPI.js'
+import Pnf from '#models/pnf.js'
 export default async function sycnSagaProgramas () {
   const sagaProgramas = await fethProgramasAPI()
 

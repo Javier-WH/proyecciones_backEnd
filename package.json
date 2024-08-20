@@ -12,6 +12,14 @@
     "db:create": "node ./src/dev/CLI/syncTables.js db:create",
     "db:sync": "node ./src/dev/CLI/syncTables.js db:sync"
   },
+  "imports": {
+    "#models/*": "./src/backEnd/dataBase/models/*",
+    "#dataBaseConnection": "./src/backEnd/dataBase/connection/ORMconnection.js",
+    "#fetch/*": "./src/backEnd/fetch/*",
+    "#ApiToken" : "./src/backEnd/dataBase/querys/Autorization/getApiToken.js",
+    "#utils/*": "./src/backEnd/utils/*",
+    "#querys/*": "./src/backEnd/dataBase/querys/*"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

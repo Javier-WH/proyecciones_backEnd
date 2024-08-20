@@ -1,4 +1,4 @@
-import sequelize from '../connection/ORMconnection.js'
+import sequelize from '#dataBaseConnection'
 import { DataTypes, Model } from 'sequelize'
 
 class Gender extends Model { }

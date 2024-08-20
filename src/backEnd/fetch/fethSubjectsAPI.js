@@ -1,4 +1,4 @@
-import getApiToken from '../dataBase/querys/Autorization/getApiToken.js'
+import getApiToken from '#ApiToken'
 
 export default async function fethSubjectAPI () {
   const token = await getApiToken()

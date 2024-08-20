@@ -1,6 +1,6 @@
-import Subjects from '../../models/subjects.js'
-import Pensums from '../../models/pensum.js'
-import Pnfs from '../../models/pnf.js'
+import Subjects from '#models/subjects.js'
+import Pensums from '#models/pensum.js'
+import Pnfs from '#models/pnf.js'
 import { Sequelize } from 'sequelize'
 
 export default async function getSubjectList () {
