@@ -6,6 +6,7 @@ import { Sequelize } from 'sequelize'
 export default async function getSubjectList () {
   const result = await Pensums.findAll({
     attributes: [
+      ['id', 'pensum_id'],
       ['subject_id', 'id'],
       [Sequelize.col('subject.name'), 'subject'],
       'hours',

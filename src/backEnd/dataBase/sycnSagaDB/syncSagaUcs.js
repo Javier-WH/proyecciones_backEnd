@@ -18,7 +18,6 @@ export default async function syncSagaUcs () {
       where: { saga_id: item.programa_info.id },
       raw: true
     })
-
     const subject = await Subjects.findOne({
       where: { name: item?.description?.trim() },
       raw: true

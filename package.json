@@ -14,11 +14,11 @@
   },
   "imports": {
     "#models/*": "./src/backEnd/dataBase/models/*",
-    "#dataBaseConnection": "./src/backEnd/dataBase/connection/ORMconnection.js",
+    "#querys/*": "./src/backEnd/dataBase/querys/*",
     "#fetch/*": "./src/backEnd/fetch/*",
+    "#dataBaseConnection": "./src/backEnd/dataBase/connection/ORMconnection.js",
     "#ApiToken" : "./src/backEnd/dataBase/querys/Autorization/getApiToken.js",
-    "#utils/*": "./src/backEnd/utils/*",
-    "#querys/*": "./src/backEnd/dataBase/querys/*"
+    "#utils/*": "./src/backEnd/utils/*"
   },
   "keywords": [],
   "author": "",
