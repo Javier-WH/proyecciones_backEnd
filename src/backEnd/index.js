@@ -17,7 +17,7 @@ const server = createServer(app)
 // base de datos
 createTables()
 setTableRelations()
-syncSagaTables()
+// syncSagaTables()
 
 // cors
 configureCors(app)

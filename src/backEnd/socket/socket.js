@@ -66,11 +66,15 @@ export default function setupSocket (server) {
     socket.on('updateSubjects', (newSubjects) => {
       const validName = validateSubjectData(newSubjects)
       if (validName.error) {
-        console.log(validName.error.message)
+        console.log(validName.error)
         return
       }
       subjects = newSubjects
       io.emit('updateSubjects', subjects)
+    })
+
+    socket.on('error', (error) => {
+      console.log(error)
     })
   })
 

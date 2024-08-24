@@ -4,9 +4,10 @@ const subjectSchema = Joi.object({
   id: Joi.string().required(),
   subject: Joi.string().required(),
   hours: Joi.number().required(),
-  pnf: Joi.string().required(),
+  pnf: Joi.string().required().allow(null),
   seccion: Joi.string().required(),
-  quarter: Joi.array().required()
+  quarter: Joi.array().required(),
+  pensum_id: Joi.string().required()
 })
 
 const objectSchema = Joi.array().items(subjectSchema)

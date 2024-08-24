@@ -31,7 +31,7 @@ export default async function getSubjectList () {
   const subjectList = result.map(subject => {
     subject.seccion = '1'
     subject.quarter = JSON.parse(subject.quarter)
-    subject.hours = parseInt(subject.hours)
+    subject.hours = subject.hours === null ? 0 : parseInt(subject.hours)
     return subject
   })
 
