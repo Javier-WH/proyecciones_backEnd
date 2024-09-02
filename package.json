@@ -18,7 +18,8 @@
     "#fetch/*": "./src/backEnd/fetch/*",
     "#dataBaseConnection": "./src/backEnd/dataBase/connection/ORMconnection.js",
     "#ApiToken" : "./src/backEnd/dataBase/querys/Autorization/getApiToken.js",
-    "#utils/*": "./src/backEnd/utils/*"
+    "#utils/*": "./src/backEnd/utils/*",
+    "#proyeccion/*": "./src/backEnd/proyeccion/*"
   },
   "keywords": [],
   "author": "",

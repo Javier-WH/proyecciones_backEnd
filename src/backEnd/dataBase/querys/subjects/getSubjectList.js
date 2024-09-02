@@ -1,6 +1,7 @@
 import Subjects from '#models/subjects.js'
 import Pensums from '#models/pensum.js'
 import Pnfs from '#models/pnf.js'
+import Trayecto from '#models/trayecto.js'
 import { Sequelize } from 'sequelize'
 
 export default async function getSubjectList () {
@@ -11,7 +12,10 @@ export default async function getSubjectList () {
       [Sequelize.col('subject.name'), 'subject'],
       'hours',
       [Sequelize.col('pnf.name'), 'pnf'],
-      'quarter'
+      'quarter',
+      [Sequelize.col('trayecto.id'), 'trayectoId'],
+      [Sequelize.col('trayecto.name'), 'trayectoName'],
+      [Sequelize.col('trayecto.saga_id'), 'trayecto_saga_id']
     ],
     include: [
       {
@@ -23,6 +27,11 @@ export default async function getSubjectList () {
         model: Subjects,
         attributes: [],
         as: 'subject'
+      },
+      {
+        model: Trayecto,
+        attributes: [],
+        as: 'trayecto'
       }
     ],
     raw: true
@@ -34,7 +43,6 @@ export default async function getSubjectList () {
     subject.hours = subject.hours === null ? 0 : parseInt(subject.hours)
     return subject
   })
-
   return subjectList
 }
 

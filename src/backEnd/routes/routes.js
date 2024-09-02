@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import { getPnfs } from '#querys/pnf/getPnf.js'
 import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
+import getInscriptionData from '#proyeccion/getInscriptionData.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -18,9 +19,14 @@ Router.get('/pnfs', async (_, res) => {
   res.json(pnfs)
 })
 
-Router.get('/subjects', async (req, res) => {
+Router.get('/subjects', async (_, res) => {
   const subjects = await getSimpleSubjectList()
   res.json(subjects)
+})
+
+Router.get('/proyecciones/inscriptionData', async (_, res) => {
+  const data = await getInscriptionData()
+  res.json(data)
 })
 
 export default Router

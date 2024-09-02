@@ -6,19 +6,13 @@ import Pensum from '#models/pensum.js'
 import ContractType from '#models/contractType.js'
 import Teacher from '#models/teachers.js'
 import Gender from '#models/gender.js'
+import Trayecto from '#models/trayecto.js'
 
 /*
  * No se debe cambiar el orden de las tablas, ya que se crearía un error de foreign key
-  0. Gender,
-  1. Subjects,
-  2. Pnf,
-  3. ContractType,
-  4. PerfilNames,
-  5. Pensum,
-  6. Perfil
-  7. Teacher,
  */
 const tableList = [
+  Trayecto,
   Gender,
   Subjects,
   Pnf,

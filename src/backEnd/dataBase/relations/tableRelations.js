@@ -7,6 +7,7 @@ import Teacher from '#models/teachers.js'
 import ContractType from '#models/contractType.js'
 import PerfilNames from '#models/perfilNames.js'
 import Perfil from '#models/perfil.js'
+import Trayecto from '#models/trayecto.js'
 
 export default function setTableRelations () {
   // Establece las asociaciones entre pnf y subject atraves de la tabla pensum
@@ -36,6 +37,14 @@ export default function setTableRelations () {
 
   Subject.hasMany(Pensum, {
     foreignKey: 'subject_id'
+  })
+  // Relación entre Pensum y Trayecto
+  Pensum.belongsTo(Trayecto, {
+    foreignKey: 'trayecto_id'
+  })
+
+  Trayecto.hasMany(Pensum, {
+    foreignKey: 'trayecto_id'
   })
 
   // Relacion entre gender y teacher
@@ -69,6 +78,4 @@ export default function setTableRelations () {
   PerfilNames.belongsTo(Perfil, {
     foreignKey: 'perfil_name_id'
   })
-
-  // Relacion entre perfil y teacher
 }

@@ -23,6 +23,13 @@ Pensum.init(
         key: 'id'
       }
     },
+    trayecto_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: 'trayectos',
+        key: 'id'
+      }
+    },
     hours: {
       type: DataTypes.STRING
     },
