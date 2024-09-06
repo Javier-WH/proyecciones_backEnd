@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import { getPnfs } from '#querys/pnf/getPnf.js'
 import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
+import { getTrayectos } from '#querys/trayecto/getTrayectos.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
 const Router = express.Router()
@@ -23,6 +24,11 @@ Router.get('/pnfs', async (_, res) => {
 Router.get('/subjects', async (_, res) => {
   const subjects = await getSimpleSubjectList()
   res.json(subjects)
+})
+
+Router.get('/trayectos', async (_, res) => {
+  const trayectos = await getTrayectos()
+  res.json(trayectos)
 })
 
 Router.get('/proyecciones/inscriptionData/:pnf', getInscriptionData)
