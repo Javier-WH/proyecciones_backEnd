@@ -4,6 +4,7 @@ import path from 'path'
 import { getPnfs } from '#querys/pnf/getPnf.js'
 import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
+import getPNFPensum from '#proyeccion/getPNFPensum.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -24,9 +25,8 @@ Router.get('/subjects', async (_, res) => {
   res.json(subjects)
 })
 
-Router.get('/proyecciones/inscriptionData', async (_, res) => {
-  const data = await getInscriptionData()
-  res.json(data)
-})
+Router.get('/proyecciones/inscriptionData/:pnf', getInscriptionData)
+
+Router.get('/proyecciones/pensum/:pnf', getPNFPensum)
 
 export default Router
