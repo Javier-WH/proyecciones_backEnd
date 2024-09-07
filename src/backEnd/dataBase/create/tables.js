@@ -7,11 +7,14 @@ import ContractType from '#models/contractType.js'
 import Teacher from '#models/teachers.js'
 import Gender from '#models/gender.js'
 import Trayecto from '#models/trayecto.js'
+import Turnos from '#models/turnos.js'
+/*
 
 /*
  * No se debe cambiar el orden de las tablas, ya que se crearía un error de foreign key
  */
 const tableList = [
+  Turnos,
   Trayecto,
   Gender,
   Subjects,

@@ -1,9 +1,12 @@
 import fethInscriptionAPI from '#fetch/fetchInscriptionAPI.js'
 import Pnf from '#models/pnf.js'
+import Trayectos from '#models/trayecto.js'
+import Turnos from '#models/turnos.js'
 
 export default async function getInscriptionData (req, res) {
   const minAprobationGrade = 10
-  const pnfId = req.params.pnf
+
+  const { pnf: pnfId, trayecto: trayectoId } = req.params
 
   const pnfData = await Pnf.findOne({ where: { id: pnfId }, raw: true })
   if (!pnfData) {
@@ -11,7 +14,21 @@ export default async function getInscriptionData (req, res) {
     return
   }
 
-  const { saga_id: sagaId, name: pnfName } = pnfData
+  const { saga_id: pnfSagaId, name: pnfName } = pnfData
+
+  const trayectoData = await Trayectos.findOne({ where: { id: trayectoId }, raw: true })
+  if (!trayectoData) {
+    res.json({ error: true, message: 'No se encontro el trayecto' })
+    return
+  }
+
+  const { saga_id: trayectoSagaId, name: trayectoName } = trayectoData
+
+  const turnos = await Turnos.findAll({ raw: true })
+  if (!turnos) {
+    res.json({ error: true, message: 'No se han podido cargar los turnos' })
+    return
+  }
 
   const data = await fethInscriptionAPI()
   if (!data) {
@@ -20,12 +37,11 @@ export default async function getInscriptionData (req, res) {
   }
 
   // filtrar por PNF
-  const filterdByPnf = data.filter((item) => item.pnf_info.id === sagaId)
+  const filterdByPnf = data.filter((item) => item.pnf_info.id === pnfSagaId)
 
   // filtrar aprobados y reprobados
   const fails = []
   const passed = []
-
   for (const student of filterdByPnf) {
     if (student.grade < minAprobationGrade) {
       fails.push(student)
@@ -34,37 +50,49 @@ export default async function getInscriptionData (req, res) {
     }
   }
 
-  // Agrupando por trayecto_id
-  const groupedByTrayectoId = passed.reduce((acc, item) => {
-    const trayectoId = `trayecto_${item.uc_info.trayecto_id}`
-    if (!acc[trayectoId]) {
-      acc[trayectoId] = []
-    }
-    acc[trayectoId].push(item)
-    return acc
-  }, {})
+  // filtrando el por trayecto
+  const passedFilterdByTrayecto = passed.filter((item) => item.uc_info.trayecto_id === trayectoSagaId)
+  const failsFilterdByTrayecto = fails.filter((item) => item.uc_info.trayecto_id === trayectoSagaId)
 
   // Eliminando duplicados por student_id
-  Object.keys(groupedByTrayectoId).forEach((trayecto) => {
-    groupedByTrayectoId[trayecto] = groupedByTrayectoId[trayecto].reduce((acc, current) => {
-      const x = acc.find(item => item.student_id === current.student_id)
-      if (!x) {
-        acc.push(current)
-      }
-      return acc
-    }, [])
-  })
-
-  // totales de estudiantes aprobados por trayecto
-  const aprovedByTrayectoId = {}
-  Object.keys(groupedByTrayectoId).forEach((trayecto) => {
-    const total = groupedByTrayectoId[trayecto].length
-    const keyName = `aproved_${trayecto}`
-    if (!aprovedByTrayectoId[keyName]) {
-      aprovedByTrayectoId[keyName] = 0
+  const filteredDuplicates = passedFilterdByTrayecto.reduce((acc, current) => {
+    const x = acc.find(item => item.student_id === current.student_id)
+    if (!x) {
+      acc.push(current)
     }
-    aprovedByTrayectoId[keyName] += total
-  })
+    return acc
+  }, [])
+
+  // Agrupando por turno
+  const groupedByTurno = filteredDuplicates.reduce((acc, obj) => {
+    const turnoName = obj.turno_info.turno
+    const turnoSagaId = obj.turno_info.id
+
+    if (!acc[turnoName]) {
+      acc[turnoName] = {}
+    }
+
+    if (!acc[turnoName].id) {
+      acc[turnoName].id = turnos.find(item => item.saga_id === turnoSagaId).id
+    }
+
+    if (!acc[turnoName].turnoSagaId) {
+      acc[turnoName].turnoSagaId = turnoSagaId
+    }
+
+    if (!acc[turnoName].turnoName) {
+      acc[turnoName].turnoName = turnoName
+    }
+
+    if (!acc[turnoName].inscriptionData) {
+      acc[turnoName].inscriptionData = []
+    }
+    acc[turnoName].inscriptionData.push(obj.student_info)
+
+    acc[turnoName].total = acc[turnoName].inscriptionData.length
+
+    return acc
+  }, {})
 
   const response = {
     error: false,
@@ -73,11 +101,14 @@ export default async function getInscriptionData (req, res) {
       minAprobationGrade,
       pnfName,
       pnfId,
-      pnfSagaId: sagaId,
-      ...aprovedByTrayectoId,
-      totalFails: fails.length,
+      pnfSagaId,
+      trayectoName,
+      trayectoId,
+      trayectoSagaId,
+      totalFails: failsFilterdByTrayecto.length,
+      totalPassed: filteredDuplicates.length,
       fails,
-      passed: groupedByTrayectoId
+      passed: groupedByTurno
     }
   }
 

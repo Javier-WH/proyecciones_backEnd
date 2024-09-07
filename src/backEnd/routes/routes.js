@@ -31,7 +31,7 @@ Router.get('/trayectos', async (_, res) => {
   res.json(trayectos)
 })
 
-Router.get('/proyecciones/inscriptionData/:pnf', getInscriptionData)
+Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
 
 Router.get('/proyecciones/pensum/:pnf', getPNFPensum)
 
