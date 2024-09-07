@@ -33,6 +33,6 @@ Router.get('/trayectos', async (_, res) => {
 
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
 
-Router.get('/proyecciones/pensum/:pnf', getPNFPensum)
+Router.get('/proyecciones/pensum/:pnf/:trayecto', getPNFPensum)
 
 export default Router

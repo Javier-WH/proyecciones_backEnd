@@ -1,7 +1,8 @@
 import Pensum from '#models/pensum.js'
 import Pnf from '#models/pnf.js'
+import Trayecto from '#models/trayecto.js'
 export default async function getPNFPensum (req, res) {
-  const pnfId = req.params.pnf
+  const { pnf: pnfId, trayecto: trayectoId } = req.params
 
   const pnf = await Pnf.findOne({
     where: { id: pnfId },
@@ -12,6 +13,17 @@ export default async function getPNFPensum (req, res) {
     return
   }
   const pnfName = pnf.name
+
+  const trayectoData = await Trayecto.findOne({
+    where: { id: trayectoId },
+    raw: true
+  })
+  if (!trayectoData) {
+    res.json({ error: true, message: 'No se ha encontrado el trayecto' })
+    return
+  }
+
+  const trayectoName = trayectoData.name
 
   const pensums = await Pensum.findAll({
     where: {
@@ -31,6 +43,8 @@ export default async function getPNFPensum (req, res) {
       data: {
         pnfName,
         pnfId,
+        trayectoId,
+        trayectoName,
         pensums
       }
     }
