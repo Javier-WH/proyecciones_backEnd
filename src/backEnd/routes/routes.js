@@ -6,6 +6,7 @@ import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
 import { getTrayectos } from '#querys/trayecto/getTrayectos.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
+import Turnos from '#models/Turnos.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -29,6 +30,11 @@ Router.get('/subjects', async (_, res) => {
 Router.get('/trayectos', async (_, res) => {
   const trayectos = await getTrayectos()
   res.json(trayectos)
+})
+
+Router.get('/turnos', async (_, res) => {
+  const turnos = await Turnos.findAll({ raw: true })
+  res.json(turnos)
 })
 
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
