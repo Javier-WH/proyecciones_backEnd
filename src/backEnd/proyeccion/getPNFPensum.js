@@ -38,6 +38,11 @@ export default async function getPNFPensum (req, res) {
       {
         model: Subject,
         attributes: []
+      },
+      {
+        model: Trayecto,
+        attributes: [],
+        as: 'trayecto'
       }
     ],
     attributes: [
@@ -45,7 +50,8 @@ export default async function getPNFPensum (req, res) {
       'subject_id',
       'hours',
       'quarter',
-      [Sequelize.col('Subject.name'), 'subject']
+      [Sequelize.col('Subject.name'), 'subject'],
+      [Sequelize.col('trayecto.saga_id'), 'trayecto_saga_id']
     ],
     raw: true
   })

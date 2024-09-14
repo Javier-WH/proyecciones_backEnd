@@ -82,4 +82,4 @@ export default function setupSocket (server) {
 }
 
 setTeacherList()
-setSubjectList()
+// setSubjectList()
