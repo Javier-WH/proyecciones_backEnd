@@ -6,7 +6,7 @@ import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
 import { getTrayectos } from '#querys/trayecto/getTrayectos.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
-import Turnos from '#models/Turnos.js'
+import Turnos from '#models/turnos.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual

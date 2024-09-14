@@ -1,6 +1,9 @@
 import Pensum from '#models/pensum.js'
 import Pnf from '#models/pnf.js'
 import Trayecto from '#models/trayecto.js'
+import Subject from '#models/subjects.js'
+
+import { Sequelize } from 'sequelize'
 export default async function getPNFPensum (req, res) {
   const { pnf: pnfId, trayecto: trayectoId } = req.params
 
@@ -27,8 +30,23 @@ export default async function getPNFPensum (req, res) {
 
   const pensums = await Pensum.findAll({
     where: {
-      pnf_id: pnfId
+      pnf_id: pnfId,
+      trayecto_id: trayectoId,
+      active: true
     },
+    include: [
+      {
+        model: Subject,
+        attributes: []
+      }
+    ],
+    attributes: [
+      'id',
+      'subject_id',
+      'hours',
+      'quarter',
+      [Sequelize.col('Subject.name'), 'subject']
+    ],
     raw: true
   })
   if (pensums.length === 0) {
