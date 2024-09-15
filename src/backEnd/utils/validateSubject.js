@@ -10,7 +10,8 @@ const subjectSchema = Joi.object({
   pensum_id: Joi.string().required(),
   trayectoId: Joi.string().required().allow(null),
   trayectoName: Joi.string().required().allow(null),
-  trayecto_saga_id: Joi.number().required().allow(null)
+  trayecto_saga_id: Joi.number().required().allow(null),
+  turnoName: Joi.string().required().allow(null)
 })
 
 const objectSchema = Joi.array().items(subjectSchema)
