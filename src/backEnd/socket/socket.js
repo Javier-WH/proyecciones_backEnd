@@ -16,6 +16,9 @@ let teachers = {
 // array de asignaturas
 let subjects = []
 
+// array de proyecciones realizadas
+let proyectionsDone = []
+
 export function setTeacherList () {
   getTeacherList().then((data) => {
     // console.log(data)
@@ -50,6 +53,7 @@ export default function setupSocket (server) {
     // Enviar el array de profesores y asignaturas al cliente
     socket.emit('updateTeachers', teachers)
     socket.emit('updateSubjects', subjects)
+    socket.emit('proyectionsDone', proyectionsDone)
 
     // Escuchar eventos de actualización de profesores
     socket.on('updateTeachers', (newTeachers) => {
@@ -73,6 +77,13 @@ export default function setupSocket (server) {
       io.emit('updateSubjects', subjects)
     })
 
+    // Escuchar eventos de actualización de proyecciones
+    socket.on('proyectionsDone', (newProyections) => {
+      proyectionsDone = newProyections
+      io.emit('proyectionsDone', proyectionsDone)
+    })
+
+    // Escuchar eventos de error
     socket.on('error', (error) => {
       console.log(error)
     })
