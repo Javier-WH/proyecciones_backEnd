@@ -16,6 +16,9 @@ Trayecto.init(
     },
     saga_id: {
       type: DataTypes.BIGINT
+    },
+    order: {
+      type: DataTypes.INTEGER
     }
   },
   {
