@@ -18,7 +18,8 @@ Trayecto.init(
       type: DataTypes.BIGINT
     },
     order: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      unique: true
     }
   },
   {

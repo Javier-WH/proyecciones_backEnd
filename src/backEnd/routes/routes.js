@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import { getPnfs } from '#querys/pnf/getPnf.js'
 import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
-import { getTrayectos } from '#querys/trayecto/getTrayectos.js'
+import { getTrayectos, puTrayecto, postTrayecto, deleteTrayecto } from '#querys/trayecto/getTrayectos.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
 import Turnos from '#models/turnos.js'
@@ -40,5 +40,25 @@ Router.get('/turnos', async (_, res) => {
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
 
 Router.get('/proyecciones/pensum/:pnf/:trayecto', getPNFPensum)
+
+/// ///////////put
+
+Router.put('/trayectos', express.json(), async (req, res) => {
+  const trayectos = await puTrayecto(req.body)
+  res.json(trayectos)
+})
+
+// ///////////post
+Router.post('/trayectos', express.json(), async (req, res) => {
+  const trayectos = await postTrayecto(req.body)
+  res.json(trayectos)
+})
+
+// //////////delete
+
+Router.delete('/trayectos', express.json(), async (req, res) => {
+  const trayectos = await deleteTrayecto(req.body)
+  res.json(trayectos)
+})
 
 export default Router
