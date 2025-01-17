@@ -6,7 +6,10 @@ import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
 import { getTrayectos, puTrayecto, postTrayecto, deleteTrayecto } from '#querys/trayecto/getTrayectos.js'
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
+import getProfile from '#querys/profile/getProfile.js'
+import getPerfilNames from '#querys/profile/getProfileNames.js'
 import Turnos from '#models/turnos.js'
+
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -40,6 +43,16 @@ Router.get('/turnos', async (_, res) => {
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
 
 Router.get('/proyecciones/pensum/:pnf/:trayecto', getPNFPensum)
+
+Router.get('/profiles', async (_, res) => {
+  const profiles = await getProfile()
+  res.json(profiles)
+})
+
+Router.get('/profileNames', async (_, res) => {
+  const profileNames = await getPerfilNames()
+  res.json(profileNames)
+})
 
 /// ///////////put
 

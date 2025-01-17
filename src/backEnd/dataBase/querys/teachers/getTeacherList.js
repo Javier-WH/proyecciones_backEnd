@@ -2,6 +2,7 @@ import Teacher from '#models/teachers.js'
 import Genders from '#models/gender.js'
 import ContractType from '#models/contractType.js'
 import Perfil from '#models/perfil.js'
+import PerfilNames from '#models/perfilNames.js'
 import { Sequelize } from 'sequelize'
 
 async function getTeacherList (active = 1) {
@@ -15,7 +16,9 @@ async function getTeacherList (active = 1) {
       'perfil_name_id',
       [Sequelize.col('gender.name'), 'gender'],
       [Sequelize.col('contract_type.hours'), 'partTime'],
-      [Sequelize.col('contract_type.contractType'), 'type']
+      [Sequelize.col('contract_type.contractType'), 'type'],
+      [Sequelize.col('perfil_name.name'), 'perfilName']
+
     ],
     include: [
       {
@@ -27,6 +30,11 @@ async function getTeacherList (active = 1) {
         model: ContractType,
         attributes: [],
         as: 'contract_type'
+      },
+      {
+        model: PerfilNames,
+        attributes: [],
+        as: 'perfil_name'
       }
 
     ],
