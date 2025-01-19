@@ -7,6 +7,7 @@ import { getTrayectos, puTrayecto, postTrayecto, deleteTrayecto } from '#querys/
 import getInscriptionData from '#proyeccion/getInscriptionData.js'
 import getPNFPensum from '#proyeccion/getPNFPensum.js'
 import getProfile from '#querys/profile/getProfile.js'
+import getProfileById from '#querys/profile/getProfileById.js'
 import getPerfilNames from '#querys/profile/getProfileNames.js'
 import Turnos from '#models/turnos.js'
 
@@ -48,6 +49,8 @@ Router.get('/profiles', async (_, res) => {
   const profiles = await getProfile()
   res.json(profiles)
 })
+
+Router.get('/profile/:id', getProfileById)
 
 Router.get('/profileNames', async (_, res) => {
   const profileNames = await getPerfilNames()

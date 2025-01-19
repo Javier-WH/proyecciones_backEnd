@@ -10,6 +10,7 @@ const teacherSchema = Joi.object({
   title: Joi.string().required(),
   partTime: Joi.number().required(),
   load: Joi.array().required().allow(null),
+  perfilName: Joi.string().required(),
   perfil: Joi.array().required(),
   gender: Joi.string().required()
 })
