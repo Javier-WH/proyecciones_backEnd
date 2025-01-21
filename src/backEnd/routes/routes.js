@@ -11,6 +11,8 @@ import getProfileById from "#querys/profile/getProfileById.js";
 import getPerfilNames from "#querys/profile/getProfileNames.js";
 import setProfile from "#querys/profile/postProfile.js";
 import Turnos from "#models/turnos.js";
+import deleteProfile from "#querys/profile/deleteProfile.js";
+import addSubjectToProfile from "#querys/profile/addSubjectToPerfil.js";
 
 const Router = express.Router();
 
@@ -76,12 +78,16 @@ Router.post("/profile", express.json(), async (req, res) => {
   res.send(response);
 });
 
+Router.post("/profile/addSubject", express.json(), addSubjectToProfile);
+
 // //////////delete
 
 Router.delete("/trayectos", express.json(), async (req, res) => {
   const trayectos = await deleteTrayecto(req.body);
   res.json(trayectos);
 });
+
+Router.delete("/profile/:id", deleteProfile);
 
 export default Router;
 
