@@ -15,8 +15,10 @@ async function getTeacherList (active = 1) {
       'title',
       'perfil_name_id',
       [Sequelize.col('gender.name'), 'gender'],
+      [Sequelize.col('gender.id'), 'genderId'],
       [Sequelize.col('contract_type.hours'), 'partTime'],
       [Sequelize.col('contract_type.contractType'), 'type'],
+      [Sequelize.col('contract_type.id'), 'contractTypeId'],
       [Sequelize.col('perfil_name.name'), 'perfilName']
 
     ],
@@ -42,8 +44,10 @@ async function getTeacherList (active = 1) {
     nest: true
   })
 
+  // se obtienen los perfiles de la base de datos
   const Perfils = await Perfil.findAll({ raw: true })
 
+  // se filtran los perfiles de cada profesor
   const teacherList = result.map(teacher => {
     const perfilNameId = teacher.perfil_name_id
     const filterdedPerfils = Perfils.filter(perfil => {
@@ -53,7 +57,7 @@ async function getTeacherList (active = 1) {
     teacher.perfil = filterdedPerfils.map(perfil => perfil.subject_id)
     teacher.load = []
     teacher.photo = null
-    delete teacher.perfil_name_id
+    // delete teacher.perfil_name_id
     return teacher
   })
 
