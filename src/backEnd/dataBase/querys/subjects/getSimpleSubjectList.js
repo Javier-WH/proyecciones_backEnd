@@ -1,4 +1,9 @@
 import Subjects from '#models/subjects.js'
 export async function getSimpleSubjectList () {
-  return await Subjects.findAll({ raw: true })
+  try {
+    return await Subjects.findAll({ raw: true })
+  } catch (error) {
+    console.error(error)
+    return []
+  }
 }

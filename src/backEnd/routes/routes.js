@@ -15,6 +15,7 @@ import deleteProfile from '#querys/profile/deleteProfile.js'
 import addSubjectToProfile from '#querys/profile/addSubjectToPerfil.js'
 import getSimpleData from '#querys/simpleData/simpleData.js'
 import postTeacher from '#querys/teachers/postTeacher.js'
+import postSubject from '#querys/subjects/postSubject.js'
 
 const Router = express.Router()
 
@@ -72,6 +73,9 @@ Router.put('/trayectos', express.json(), async (req, res) => {
 })
 
 // ///////////post
+
+Router.post('/subject', express.json(), postSubject)
+
 Router.post('/trayectos', express.json(), async (req, res) => {
   const trayectos = await postTrayecto(req.body)
   res.json(trayectos)
