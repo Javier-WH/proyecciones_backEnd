@@ -16,7 +16,8 @@ import addSubjectToProfile from '#querys/profile/addSubjectToPerfil.js'
 import getSimpleData from '#querys/simpleData/simpleData.js'
 import postTeacher from '#querys/teachers/postTeacher.js'
 import postSubject from '#querys/subjects/postSubject.js'
-import getPensum from '#querys/subjects/getPensum.js'
+import postPensum from '#querys/subjects/postPensum.js'
+import deletePensum from '#querys/subjects/deletePensum.js'
 
 const Router = express.Router()
 
@@ -66,8 +67,6 @@ Router.get('/profileNames', async (_, res) => {
 
 Router.get('/simpleData', getSimpleData)
 
-Router.get('/pensum', getPensum)
-
 /// ///////////put
 
 Router.put('/trayectos', express.json(), async (req, res) => {
@@ -93,6 +92,8 @@ Router.post('/profile/addSubject', express.json(), addSubjectToProfile)
 
 Router.post('/teacher', express.json(), postTeacher)
 
+Router.post('/pensum', express.json(), postPensum)
+
 // //////////delete
 
 Router.delete('/trayectos', express.json(), async (req, res) => {
@@ -101,5 +102,7 @@ Router.delete('/trayectos', express.json(), async (req, res) => {
 })
 
 Router.delete('/profile/:perfil_name_id', deleteProfile)
+
+Router.delete('/pensum/:id', deletePensum)
 
 export default Router
