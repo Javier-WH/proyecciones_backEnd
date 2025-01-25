@@ -16,6 +16,7 @@ import addSubjectToProfile from '#querys/profile/addSubjectToPerfil.js'
 import getSimpleData from '#querys/simpleData/simpleData.js'
 import postTeacher from '#querys/teachers/postTeacher.js'
 import postSubject from '#querys/subjects/postSubject.js'
+import getPensum from '#querys/subjects/getPensum.js'
 
 const Router = express.Router()
 
@@ -64,6 +65,8 @@ Router.get('/profileNames', async (_, res) => {
 })
 
 Router.get('/simpleData', getSimpleData)
+
+Router.get('/pensum', getPensum)
 
 /// ///////////put
 
