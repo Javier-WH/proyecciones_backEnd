@@ -18,6 +18,10 @@ import postTeacher from '#querys/teachers/postTeacher.js'
 import postSubject from '#querys/subjects/postSubject.js'
 import postPensum from '#querys/subjects/postPensum.js'
 import deletePensum from '#querys/subjects/deletePensum.js'
+import deleteSubjectInProfile from '#querys/profile/deleteSubjectInProfile.js'
+import getTeacherList from '#querys/teachers/getTeacherList.js'
+import postPNF from '#querys/pnf/postPNF.js'
+import deletePNF from '#querys/pnf/deletePNF.js'
 
 const Router = express.Router()
 
@@ -27,6 +31,11 @@ const __dirname = path.dirname(__filename)
 
 Router.get('/', (_, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'frontEnd', 'index.html'))
+})
+
+Router.get('/teachers', async (_, res) => {
+  const teachers = await getTeacherList()
+  res.json(teachers)
 })
 
 Router.get('/pnfs', async (_, res) => {
@@ -94,6 +103,8 @@ Router.post('/teacher', express.json(), postTeacher)
 
 Router.post('/pensum', express.json(), postPensum)
 
+Router.post('/pnf', express.json(), postPNF)
+
 // //////////delete
 
 Router.delete('/trayectos', express.json(), async (req, res) => {
@@ -103,6 +114,10 @@ Router.delete('/trayectos', express.json(), async (req, res) => {
 
 Router.delete('/profile/:perfil_name_id', deleteProfile)
 
+Router.delete('/subjectinprofile/:id', deleteSubjectInProfile)
+
 Router.delete('/pensum/:id', deletePensum)
+
+Router.delete('/pnf/:id', deletePNF)
 
 export default Router
