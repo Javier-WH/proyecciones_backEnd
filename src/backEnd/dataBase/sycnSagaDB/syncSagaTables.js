@@ -1,13 +1,16 @@
-import sycnSagaSubjects from './sycnSagaSubjects.js'
-import sycnSagaProgramas from './sycnSagaProgramas.js'
-import syncSagaUcs from './syncSagaUcs.js'
-import sycnSagaTrayectos from './syncSagaTrayectos.js'
-import sycnSagaTurnos from './syncSagaTurnos.js'
+import sycnSagaSubjects from "./sycnSagaSubjects.js";
+import sycnSagaProgramas from "./sycnSagaProgramas.js";
+import syncSagaUcs from "./syncSagaUcs.js";
+import sycnSagaTrayectos from "./syncSagaTrayectos.js";
+import sycnSagaTurnos from "./syncSagaTurnos.js";
+import sycnSagaTeachers from "./syncSagaTeachers.js";
 
-export default async function syncSagaTables () {
-  await sycnSagaTrayectos()
-  await sycnSagaSubjects()
-  await sycnSagaProgramas()
-  await sycnSagaTurnos()
-  await syncSagaUcs() // pensum
+export default async function syncSagaTables() {
+  await sycnSagaTrayectos();
+  await sycnSagaSubjects();
+  await sycnSagaProgramas();
+  await sycnSagaTurnos();
+  await syncSagaUcs(); // pensum
+  await sycnSagaTeachers();
 }
+

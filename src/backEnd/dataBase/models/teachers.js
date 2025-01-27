@@ -1,67 +1,68 @@
-import sequelize from '#dataBaseConnection'
-import { DataTypes, Model } from 'sequelize'
+import sequelize from "#dataBaseConnection";
+import { DataTypes, Model } from "sequelize";
 
-class Teacher extends Model { }
+class Teacher extends Model {}
 Teacher.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     ci: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     gender_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'genders',
-        key: 'id'
-      }
+        model: "genders",
+        key: "id",
+      },
     },
     contractTypes_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: 'contract_types',
-        key: 'id'
-      }
+        model: "contract_types",
+        key: "id",
+      },
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     perfil_name_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: 'perfil_names',
-        key: 'id'
-      }
+        model: "perfil_names",
+        key: "id",
+      },
     },
     active: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
-    }
+      defaultValue: true,
+    },
   },
   {
     sequelize,
-    modelName: 'teachers',
+    modelName: "teachers",
     timestamps: false,
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci'
+    charset: "utf8mb4",
+    collate: "utf8mb4_unicode_ci",
   }
-)
+);
 
-export default Teacher
+export default Teacher;
+
