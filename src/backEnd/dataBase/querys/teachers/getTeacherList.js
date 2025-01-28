@@ -14,6 +14,7 @@ async function getTeacherList (active = 1) {
       'ci',
       'title',
       'perfil_name_id',
+      'active',
       [Sequelize.col('gender.name'), 'gender'],
       [Sequelize.col('gender.id'), 'genderId'],
       [Sequelize.col('contract_type.hours'), 'partTime'],

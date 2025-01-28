@@ -3,6 +3,7 @@ import validateTeacherData from '#utils/validateTeacherData.js'
 import validateSubjectData from '#utils/validateSubject.js'
 import getTeacherList from '#querys/teachers/getTeacherList.js'
 import getSubjectList from '#querys/subjects/getSubjectList.js'
+import { getTeacherData } from './socketUtils.js'
 
 let io = null
 
@@ -57,12 +58,28 @@ export default function setupSocket (server) {
 
     // Escuchar eventos de actualización de profesores
     socket.on('updateTeachers', (newTeachers) => {
-      const validName = validateTeacherData(newTeachers)
+      /* const validName = validateTeacherData(newTeachers)
       if (validName.error) {
         console.log(validName.error.message)
         return
-      }
+      } */
       teachers = newTeachers
+      io.emit('updateTeachers', teachers)
+    })
+
+    socket.on('updateTeacher', async (teacherData) => {
+      teacherData = await getTeacherData(teacherData)
+
+      const quarterList = Object.keys(teachers)
+      quarterList.forEach((quarter) => {
+        teachers[quarter] = teachers[quarter].map((teacher) => {
+          if (teacher.id === teacherData.id) {
+            teacher = teacherData
+          }
+          return teacher
+        })
+      })
+
       io.emit('updateTeachers', teachers)
     })
 
