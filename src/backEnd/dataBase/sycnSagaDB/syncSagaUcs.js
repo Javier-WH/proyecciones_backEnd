@@ -48,7 +48,7 @@ export default async function syncSagaUcs () {
       subject_id: subject?.id ?? null,
       trayecto_id: trayectoId,
       hours,
-      quarter
+      quarter: String(quarter)
     })
   }
 
