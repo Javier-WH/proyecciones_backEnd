@@ -50,7 +50,7 @@ Pensum.init(
     indexes: [
       {
         unique: true,
-        fields: ['pnf_id', 'subject_id']
+        fields: ['pnf_id', 'trayecto_id', 'subject_id']
       }
     ]
   }

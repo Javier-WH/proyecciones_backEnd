@@ -8,9 +8,6 @@ import Trayecto from '#models/trayecto.js'
 export default async function syncSagaUcs () {
   const sagaSubjects = await fethSubjectAPI()
 
-  // console.log(sagaSubjects)
-  // return
-
   if (sagaSubjects === null) {
     console.log('No se han podido sincronizar el pensum')
     return
@@ -38,13 +35,20 @@ export default async function syncSagaUcs () {
     let hours = item?.hours?.htea
     if (!hours) hours = null // si las horas son undefinded, null o 0, se pone como null
 
+    const quarteData = item?.quarters
+    const quarter = [
+      ...(quarteData?.q1 === 1 ? [1] : []),
+      ...(quarteData?.q2 === 1 ? [2] : []),
+      ...(quarteData?.q3 === 1 ? [3] : [])
+    ]
+
     pensumItems.push({
       id: crypto.randomUUID(),
       pnf_id: pnf?.id ?? null,
       subject_id: subject?.id ?? null,
       trayecto_id: trayectoId,
       hours,
-      quarter: '[1, 2]'
+      quarter
     })
   }
 
