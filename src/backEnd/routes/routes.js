@@ -22,6 +22,7 @@ import deleteSubjectInProfile from '#querys/profile/deleteSubjectInProfile.js'
 import getTeacherList from '#querys/teachers/getTeacherList.js'
 import postPNF from '#querys/pnf/postPNF.js'
 import deletePNF from '#querys/pnf/deletePNF.js'
+import createProyection from '#querys/proyections/createProyection.js'
 
 const Router = express.Router()
 
@@ -104,6 +105,8 @@ Router.post('/teacher', express.json(), postTeacher)
 Router.post('/pensum', express.json(), postPensum)
 
 Router.post('/pnf', express.json(), postPNF)
+
+Router.post('/proyeccion', express.json(), createProyection)
 
 // //////////delete
 

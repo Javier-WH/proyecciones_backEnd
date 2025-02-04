@@ -11,15 +11,21 @@ export default async function createProyection (req, res) {
 
   try {
     // se verifica si ya existe un year registrado
-    const existingYear = await Proyections.findOne({ where: { year }, raw: true })
+    const existingYear = await Proyections.findOne({
+      where: {
+        year
+      },
+      order: [['createdAt', 'DESC']],
+      raw: true
+    })
 
-    let proyection = []
-    let teachers = []
-    let proyections_done = []
-    if (existingYear.length > 0) {
-      proyection = existingYear.proyection
-      teachers = existingYear.teachers
-      proyections_done = existingYear.proyections_done
+    let proyection = '[]'
+    let teachers = '[]'
+    let proyections_done = '[]'
+    if (existingYear) {
+      proyection = existingYear?.proyection || '[]'
+      teachers = existingYear?.teachers || '[]'
+      proyections_done = existingYear?.proyections_done || '[]'
     }
 
     // se crea la proyeccion
@@ -27,7 +33,9 @@ export default async function createProyection (req, res) {
     await Proyections.create({ id, year, name, proyection, teachers, proyections_done })
     res.status(201).json({ message: 'Proyeccion creada exitosamente' })
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ error: 'Error al crear la proyections' })
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: 'Ya existe una proyeccion con ese nombre' })
+    }
+    res.status(500).json({ error: 'Error al crear la proyection' })
   }
 }
