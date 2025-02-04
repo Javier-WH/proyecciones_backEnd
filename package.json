@@ -19,7 +19,8 @@
     "#dataBaseConnection": "./src/backEnd/dataBase/connection/ORMconnection.js",
     "#ApiToken" : "./src/backEnd/dataBase/querys/Autorization/getApiToken.js",
     "#utils/*": "./src/backEnd/utils/*",
-    "#proyeccion/*": "./src/backEnd/proyeccion/*"
+    "#proyeccion/*": "./src/backEnd/proyeccion/*",
+    "#dev/*": "./src/dev/*"
   },
   "keywords": [],
   "author": "",

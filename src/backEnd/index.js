@@ -13,7 +13,6 @@ import syncSagaTables from './dataBase/sycnSagaDB/syncSagaTables.js'
 dotenv.config()
 const app = express()
 const server = createServer(app)
-
 // base de datos
 createTables()
 setTableRelations()

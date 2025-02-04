@@ -1,5 +1,5 @@
-import sequelize from "#dataBaseConnection";
-import { DataTypes, Model } from "sequelize";
+import sequelize from '#dataBaseConnection'
+import { DataTypes, Model } from 'sequelize'
 
 class Proyections extends Model {}
 Proyections.init(
@@ -7,7 +7,7 @@ Proyections.init(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: DataTypes.UUIDV4
     },
     year: {
       type: DataTypes.INTEGER,
@@ -15,35 +15,33 @@ Proyections.init(
       validate: {
         isInt: true,
         min: 1900,
-        max: 2300,
-      },
+        max: 2300
+      }
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     proyection: {
-      type: DataTypes.TEXT("long"),
-      allowNull: false,
+      type: DataTypes.TEXT('long'),
+      allowNull: false
     },
     teachers: {
-      type: DataTypes.TEXT("long"),
-      allowNull: false,
+      type: DataTypes.TEXT('long'),
+      allowNull: false
     },
     proyections_done: {
-      type: DataTypes.TEXT("long"),
-      allowNull: false,
-    },
+      type: DataTypes.TEXT('long'),
+      allowNull: false
+    }
   },
   {
     sequelize,
-    modelName: "proyections",
-    timestamps: false,
-    charset: "utf8mb4",
-    collate: "utf8mb4_unicode_ci",
+    modelName: 'proyections',
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
   }
-);
+)
 
-export default Proyections;
-
+export default Proyections

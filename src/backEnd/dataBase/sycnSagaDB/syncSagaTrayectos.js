@@ -12,13 +12,14 @@ export default async function sycnSagaTrayectos () {
     return {
       id: crypto.randomUUID(),
       name: item.trayecto.trim(),
-      saga_id: item.id
+      saga_id: item.id,
+      order: item.id
     }
   })
 
   try {
     await Trayecto.bulkCreate(trayectoList, {
-      fields: ['id', 'name', 'saga_id'],
+      fields: ['id', 'name', 'saga_id', 'order'],
       updateOnDuplicate: ['name', 'saga_id']
     })
     console.log('Trayectos sincronizados')
