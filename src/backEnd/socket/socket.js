@@ -2,7 +2,6 @@ import { Server } from 'socket.io'
 import validateTeacherData from '#utils/validateTeacherData.js'
 import validateSubjectData from '#utils/validateSubject.js'
 import getTeacherList from '#querys/teachers/getTeacherList.js'
-import getSubjectList from '#querys/subjects/getSubjectList.js'
 import { getTeacherData, checkIfProyectionExists } from './socketUtils.js'
 import { updateProyection } from '../dataBase/create/updateProyection.js'
 import Config from '#models/config.js'
@@ -48,7 +47,13 @@ const loadProyection = async () => {
   const proyeccion = request.data
 
   if (proyeccion?.teachers) {
-    teachers = await JSON.parse(proyeccion.teachers)
+    if (proyeccion?.teachers === '{ "q1": [], "q2": [], "q3": [] }') {
+      console.log('sin profesores en la proyeccion')
+      await setTeacherList()
+    } else {
+      console.log('profesores en la proyeccion')
+      teachers = await JSON.parse(proyeccion.teachers)
+    }
   }
   if (proyeccion?.subjects) {
     subjects = await JSON.parse(proyeccion.subjects)
@@ -135,6 +140,15 @@ export default function setupSocket (server) {
     socket.on('proyectionsDone', (newProyections) => {
       proyectionsDone = newProyections
       io.emit('proyectionsDone', proyectionsDone)
+    })
+
+    socket.on('reload', () => {
+      loadProyection().then(() => {
+        socket.emit('updateTeachers', teachers)
+        socket.emit('updateSubjects', subjects)
+        socket.emit('proyectionsDone', proyectionsDone)
+        socket.emit('proyectionData', { proyectionName, proyectionId })
+      })
     })
 
     // Escuchar eventos de error
