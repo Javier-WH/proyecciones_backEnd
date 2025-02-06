@@ -5,9 +5,11 @@ import getTeacherList from "#querys/teachers/getTeacherList.js";
 import getSubjectList from "#querys/subjects/getSubjectList.js";
 import { getTeacherData, checkIfProyectionExists } from "./socketUtils.js";
 import { updateProyection } from "../dataBase/create/updateProyection.js";
-const currentProyectionId = "0b4bb3dc-db19-4e1e-a412-a8fa3f2d8809";
+import Config from "#models/config.js";
 
 let io = null;
+
+let currentProyectionId = "";
 
 // Array de profesores
 let teachers = {
@@ -28,6 +30,13 @@ let proyectionId = null;
 
 // Verificar si hay una proyeccion activa
 const loadProyection = async () => {
+  // se obtiene el id de la proyeccion activa
+  const requestConfigData = await Config.findOne({ where: { id: 1 }, raw: true });
+  if (requestConfigData?.active_proyection) {
+    currentProyectionId = requestConfigData?.active_proyection;
+  }
+
+  //se obtienen los datos de la proyeccion activa
   const request = await checkIfProyectionExists(currentProyectionId);
   if (request.error) {
     console.log(request.message);
@@ -77,7 +86,6 @@ export default function setupSocket(server) {
         console.log(validName.error.message)
         return
       } */
-
       teachers = newTeachers;
       updateProyection({
         id: currentProyectionId,

@@ -9,6 +9,7 @@ import Gender from "#models/gender.js";
 import Trayecto from "#models/trayecto.js";
 import Turnos from "#models/turnos.js";
 import Proyections from "#models/proyections.js";
+import Config from "#models/config.js";
 /*
 
 /*
@@ -26,6 +27,7 @@ const tableList = [
   Perfil,
   Teacher,
   Proyections,
+  Config,
 ];
 
 export default tableList;
