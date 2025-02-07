@@ -10,6 +10,7 @@ import Trayecto from '#models/trayecto.js'
 import Turnos from '#models/turnos.js'
 import Proyections from '#models/proyections.js'
 import Config from '#models/config.js'
+import Users from '#models/users.js'
 /*
 
 /*
@@ -27,7 +28,8 @@ const tableList = [
   Perfil,
   Teacher,
   Proyections,
-  Config
+  Config,
+  Users
 ]
 
 export default tableList
