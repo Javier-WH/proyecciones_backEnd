@@ -26,7 +26,7 @@ import createProyection from '#querys/proyections/createProyection.js'
 import getProyections from '#querys/proyections/getProyection.js'
 import getActiveProyection from '#querys/proyections/getActiveProyection.js'
 import setActiveProyection from '#querys/proyections/setActiveProyection.js'
-
+import { createUserController, loginUserController } from '#querys/user/userController.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -116,6 +116,10 @@ Router.post('/pensum', express.json(), postPensum)
 Router.post('/pnf', express.json(), postPNF)
 
 Router.post('/proyeccion', express.json(), createProyection)
+
+Router.post('/user', express.json(), createUserController)
+
+Router.post('/login', express.json(), loginUserController)
 
 // //////////delete
 
