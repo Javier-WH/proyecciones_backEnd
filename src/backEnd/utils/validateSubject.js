@@ -5,6 +5,7 @@ const subjectSchema = Joi.object({
   subject: Joi.string().required(),
   hours: Joi.number().required(),
   pnf: Joi.string().required().allow(null),
+  pnfId: Joi.string().required().allow(null),
   seccion: Joi.string().required(),
   quarter: Joi.array().required(),
   pensum_id: Joi.string().required(),
