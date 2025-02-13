@@ -12,7 +12,7 @@ export default async function syncSagaTables () {
   await sycnSagaSubjects()
   await sycnSagaProgramas()
   await sycnSagaTurnos()
-  await syncSagaUcs() // pensum
+  // await syncSagaUcs() // pensum
   await generateGenderData() // mock data
   await generateContractsData() // mock data
   await sycnSagaTeachers()
