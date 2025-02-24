@@ -4,6 +4,7 @@ import Proyections from "#models/proyections.js";
 
 export async function getTeacherData(teacher) {
   const contract = await ContractType.findAll({ raw: true });
+
   const subjectsInPerfil = await Perfil.findAll({
     where: { perfil_name_id: teacher.perfil_name_id },
     raw: true,
@@ -13,6 +14,7 @@ export async function getTeacherData(teacher) {
   teacher.perfil = subjectsInPerfil
     .filter((s) => s.perfil_name_id === teacher.perfil_name_id)
     .map((s) => s.subject_id);
+
   return teacher;
 }
 
