@@ -138,11 +138,11 @@ export default function setupSocket(server) {
 
     // Escuchar eventos de actualización de asignaturas
     socket.on("updateSubjects", (newSubjects) => {
-      const validName = validateSubjectData(newSubjects);
+      /*const validName = validateSubjectData(newSubjects);
       if (validName.error) {
         console.log(validName.error);
         return;
-      }
+      }*/
       subjects = newSubjects;
       io.emit("updateSubjects", subjects);
     });

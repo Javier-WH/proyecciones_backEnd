@@ -1,34 +1,38 @@
-import sequelize from '#dataBaseConnection'
-import { DataTypes, Model } from 'sequelize'
+import sequelize from "#dataBaseConnection";
+import { DataTypes, Model } from "sequelize";
 
-class Pnf extends Model { }
+class Pnf extends Model {}
 Pnf.init(
   {
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     active: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true
+      defaultValue: true,
     },
     saga_id: {
-      type: DataTypes.BIGINT
-    }
+      type: DataTypes.BIGINT,
+    },
+    color: {
+      type: DataTypes.STRING,
+    },
   },
   {
     sequelize,
-    modelName: 'pnfs',
+    modelName: "pnfs",
     timestamps: false,
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_unicode_ci'
+    charset: "utf8mb4",
+    collate: "utf8mb4_unicode_ci",
   }
-)
+);
 
-export default Pnf
+export default Pnf;
+
