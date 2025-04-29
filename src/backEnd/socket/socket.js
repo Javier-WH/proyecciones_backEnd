@@ -144,6 +144,12 @@ export default function setupSocket(server) {
         return;
       }*/
       subjects = newSubjects;
+      updateProyection({
+        id: currentProyectionId,
+        teachers: JSON.stringify(teachers),
+        subjects: JSON.stringify(subjects),
+        proyections_done: JSON.stringify(proyectionsDone),
+      });
       io.emit("updateSubjects", subjects);
     });
 
