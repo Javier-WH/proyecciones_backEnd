@@ -29,6 +29,7 @@ let proyectionId = null;
 
 // Verificar si hay una proyeccion activa
 const loadProyection = async () => {
+  await setTeacherList();
   // se obtiene el id de la proyeccion activa
   const requestConfigData = await Config.findOne({ where: { id: 1 }, raw: true });
   if (requestConfigData?.active_proyection) {
@@ -46,7 +47,7 @@ const loadProyection = async () => {
   proyectionId = request.data.id;
   const proyeccion = request.data;
 
-  if (proyeccion?.teachers) {
+  /*if (proyeccion?.teachers) {
     if (proyeccion?.teachers === '{ "q1": [], "q2": [], "q3": [] }') {
       console.log("sin profesores en la proyeccion");
       await setTeacherList();
@@ -54,7 +55,7 @@ const loadProyection = async () => {
       console.log("profesores en la proyeccion");
       teachers = await JSON.parse(proyeccion.teachers);
     }
-  }
+  }*/
   if (proyeccion?.subjects) {
     subjects = await JSON.parse(proyeccion.subjects);
   }
@@ -104,33 +105,6 @@ export default function setupSocket(server) {
         teachers: JSON.stringify(teachers),
         subjects: JSON.stringify(subjects),
         proyections_done: JSON.stringify(proyectionsDone),
-      });
-
-      io.emit("updateTeachers", teachers);
-    });
-
-    socket.on("updateTeacher", async (teacherData) => {
-      teacherData = await getTeacherData(teacherData);
-
-      const quarterList = Object.keys(teachers);
-      quarterList.forEach((quarter) => {
-        teachers[quarter] = teachers[quarter].map((teacher) => {
-          if (teacher.id === teacherData.id) {
-            teacher.name = teacherData.name;
-            teacher.last_name = teacherData.last_name;
-            teacher.ci = teacherData.ci;
-            teacher.gender_id = teacherData.gender_id;
-            teacher.gender = teacherData.gender;
-            teacher.contractTypes_id = teacherData.contractTypes_id;
-            teacher.type = teacherData.type;
-            teacher.partTime = teacherData.partTime;
-            teacher.title = teacherData.title;
-            teacher.perfil_name_id = teacherData.perfil_name_id;
-            teacher.perfilName = teacherData.perfilName;
-            teacher.active = teacherData.active;
-          }
-          return teacher;
-        });
       });
 
       io.emit("updateTeachers", teachers);

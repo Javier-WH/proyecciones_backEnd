@@ -1,4 +1,5 @@
 import ContractType from "#models/contractType.js";
+import { setTeacherList } from "../../../socket/socket.js";
 
 export async function getContractTypes(req, res) {
   try {
@@ -24,6 +25,8 @@ export async function updateContractType(req, res) {
       return res.status(404).json({ error: "Tipo de contrato no encontrado" });
     }
     await ContractType.update(params, { where: { id } });
+    // Actualizar la lista de profesores en el socket
+    await setTeacherList();
     return res.status(200).json({ message: "Tipo de contrato actualizado" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
