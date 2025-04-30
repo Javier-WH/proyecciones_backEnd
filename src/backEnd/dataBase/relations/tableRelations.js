@@ -81,10 +81,10 @@ export default function setTableRelations() {
 }
 //
 // En el modelo Profile
-//Perfil.belongsTo(PerfilNames, { foreignKey: "perfil_name_id" });
+Perfil.belongsTo(PerfilNames, { foreignKey: "perfil_name_id" });
 
 // En el modelo ProfileNames
-//PerfilNames.hasMany(Perfil, { foreignKey: "perfil_name_id" });
+PerfilNames.hasMany(Perfil, { foreignKey: "perfil_name_id" });
 
 // En el modelo Profile
 Perfil.belongsTo(Subject, { foreignKey: "subject_id" });
