@@ -6,6 +6,10 @@ import generateSingleQuarterSheet from "./singleQuarterSheet.js";
 import Contracts from "#models/contractType.js";
 
 export async function generateExcelReport(req, res) {
+  const { pnfId } = req.body;
+  if (!pnfId) {
+    return res.status(400).json({ message: "El ID del PNF es requerido" });
+  }
   try {
     const contracts = await Contracts.findAll({ raw: true });
     if (!contracts) {
@@ -31,10 +35,14 @@ export async function generateExcelReport(req, res) {
     if (!proyection.subjects) {
       return res.status(404).json({ message: "No se encontraron materias en la proyección" });
     }
-    const subjects = JSON.parse(proyection.subjects);
+    const rawSubjects = JSON.parse(proyection.subjects);
+    const filteredSubjects = rawSubjects.filter((subject) => subject.pnfId === pnfId);
+    if (filteredSubjects.length === 0) {
+      return res.status(404).json({ message: "No se encontraron materias para el PNF especificado" });
+    }
 
     // agrupar las materias por profesor
-    const groupedSubjects = groupSubjectsByProfessor(subjects);
+    const groupedSubjects = groupSubjectsByProfessor(filteredSubjects);
 
     // Obtener los datos de los profesores desde la base de datos
     const teachersIDs = groupedSubjects.map((group) => group.professorId);
@@ -100,11 +108,9 @@ function groupSubjectsByProfessor(subjects) {
   subjects.forEach((subject) => {
     const quarters = subject.quarter;
 
-    // Create a new subject object without the 'quarter' key
     const subjectWithoutQuarter = {
       ...subject,
     };
-    delete subjectWithoutQuarter.quarter;
 
     for (const quarterKey in quarters) {
       if (Object.hasOwn(quarters, quarterKey)) {

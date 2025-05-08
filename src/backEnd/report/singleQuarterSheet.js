@@ -8,9 +8,8 @@ export default function generateSingleQuarterSheet({
   let pageNumber = Number.parseInt(sheetNumber);
 
   for (const pnf of pnfArray) {
-    const teachers = groupSubjectsByTeacher(pnf);
-
     for (let quarter = 1; quarter <= 3; quarter++) {
+      const teachers = groupSubjectsByTeacher(pnf, quarter);
       const sheetName = `${pnf[0].pnf} T-${quarter}`
         .replace("P.N.F. en ", "")
         .replace("P.N.F en ", "")
@@ -150,6 +149,7 @@ export default function generateSingleQuarterSheet({
             contracts.find((contract) => contract.id === teacher.contractTypes_id)?.contractType ||
             "Sin contrato";
 
+          //console.log(subject);
           sheet.cell(`B${row}`).value(subject.subject);
           sheet.cell(`C${row}`).value(subject.trayectoName);
           sheet.cell(`C${row}`).style("horizontalAlignment", "center");
@@ -197,7 +197,7 @@ export default function generateSingleQuarterSheet({
     }
   }
 
-  if (workbook.sheets.length > 1) {
+  if (workbook.sheets().length > 1) {
     workbook.deleteSheet(0);
   }
   return {
@@ -219,7 +219,7 @@ function getQuaterName(number) {
   }
 }
 
-function groupSubjectsByTeacher(subjects) {
+function groupSubjectsByTeacher(subjects, quarter) {
   const teachersMap = {};
 
   subjects.forEach((subject) => {
@@ -240,6 +240,7 @@ function groupSubjectsByTeacher(subjects) {
       // Agregar la materia a la carga del profesor, excluyendo la data del profesor para evitar recursión/anidamiento excesivo
       const subjectWithoutTeacherData = { ...subject };
       delete subjectWithoutTeacherData.teacherData;
+      //console.log(subject);
       teachersMap[teacherId].load.push(subjectWithoutTeacherData);
     }
   });
