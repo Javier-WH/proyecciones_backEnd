@@ -57,6 +57,13 @@ export async function generateExcelReport (req, res) {
       return res.status(404).json({ message: 'No se encontraron profesores' })
     }
 
+    // revisar si todos los profesores tienen un contrato
+    const teachersWhioutContract = teachers.filter((teacher) => (teacher.contractTypes_id === null || teacher.contractTypes_id === undefined || teacher.contractTypes_id === ''))
+    if (teachersWhioutContract.length > 0) {
+      const teachersWhioutContractCi = teachersWhioutContract.map((teacher) => teacher.ci).join(', ')
+      return res.status(406).json({ message: `Hay materias asociadas a profesores sin contrato => ( ${teachersWhioutContractCi} )` })
+    }
+
     const reportData = groupedSubjects.map((group) => {
       const teacher = teachers.find((t) => t.id === group.professorId)
       return {
