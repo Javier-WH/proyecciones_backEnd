@@ -112,23 +112,23 @@ export async function generateExcelReport (req, res) {
       return res.status(500).json({ message: 'Error al generar el reporte' })
     }
 
-    responseWarkbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
+    // responseWarkbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
     // singleQuaterWarkbook.toFileAsync('/home/dev_uptll/Escritorio/report.xlsx')
 
-    return res.status(200).json({ message: 'Proyección generada con exito' })
+    // return res.status(200).json({ message: 'Proyección generada con exito' })
 
     // return workbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
 
     // Generar el archivo de Excel en un buffer en memoria
-    // const data = await workbook.outputAsync()
+    const data = await workbook.outputAsync()
 
     // Configurar las cabeceras de la respuesta para la descarga del archivo
-    // const filename = 'reporte.xlsx'
-    // res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    // res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
+    const filename = 'reporte.xlsx'
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
     // Enviar el buffer como respuesta
-    // res.status(200).send(data)
+    res.status(200).send(data)
   } catch (err) {
     console.error('Error generating report:', err)
     res.status(500).json({ message: 'Error al generar el reporte', error: err.message })

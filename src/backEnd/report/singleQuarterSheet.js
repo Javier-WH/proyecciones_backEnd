@@ -134,6 +134,7 @@ export default function generateSingleQuarterSheet ({
 
       // datos de la tabla
       for (const [teacherIndex, teacher] of teachers.entries()) {
+        if (teacher.load.length === 0) continue
         const teacherHours = getTeacherHous(teacher.load)
 
         sheet.cell(`A${row}`).value(`${teacher.last_name} ${teacher.name}`.toUpperCase())
