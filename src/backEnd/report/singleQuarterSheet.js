@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { getTeacherHous } from './utils.js'
 export default function generateSingleQuarterSheet ({
   sheetNumber,
   workbook,
@@ -129,7 +130,8 @@ export default function generateSingleQuarterSheet ({
 
       // datos de la tabla
       for (const [teacherIndex, teacher] of teachers.entries()) {
-        // console.log(teacher);
+        const teacherHours = getTeacherHous(teacher.load)
+
         sheet.cell(`A${row}`).value(`${teacher.last_name} ${teacher.name}`)
         sheet.cell(`A${row}`).style('wrapText', true)
         const initRange = row
@@ -139,12 +141,6 @@ export default function generateSingleQuarterSheet ({
             : subject.hours.q2
               ? subject.hours.q2
               : subject.hours.q3
-
-          const q1Hours = parseInt(subject?.hours?.q1, 10) || 0
-          const q2Hours = parseInt(subject?.hours?.q2, 10) || 0
-          const q3Hours = parseInt(subject?.hours?.q3, 10) || 0
-
-          const totalHours = q1Hours + q2Hours + q3Hours
 
           const teacherContractType =
             contracts.find((contract) => contract.id === teacher.contractTypes_id)?.contractType ||
@@ -158,7 +154,7 @@ export default function generateSingleQuarterSheet ({
           sheet.cell(`E${row}`).value(subject.turnoName)
           sheet.cell(`F${row}`).value(UCHours)
           sheet.cell(`F${row}`).style('horizontalAlignment', 'center')
-          subjectIndex === 0 && sheet.cell(`G${row}`).value(totalHours)
+          subjectIndex === 0 && sheet.cell(`G${row}`).value(teacherHours[`q${quarter}`])
           sheet.cell(`G${row}`).style('horizontalAlignment', 'center')
           sheet.cell(`H${row}`).value(teacherContractType)
           sheet.row(row).height(25)
@@ -166,35 +162,35 @@ export default function generateSingleQuarterSheet ({
           row++
         }
         const teacherCellRange = sheet.range(`A${initRange}:A${initRange + teacher.load.length - 1}`)
-        teacherCellRange.merged(true)
+        teacher.load.length > 1 && teacherCellRange.merged(true)
         // teacherCellRange.style("horizontalAlignment", "center");
         teacherCellRange.style('verticalAlignment', 'center')
 
         const totalHourCellRange = sheet.range(`G${initRange}:G${initRange + teacher.load.length - 1}`)
-        totalHourCellRange.merged(true)
+        teacher.load.length > 1 && totalHourCellRange.merged(true)
         totalHourCellRange.style('horizontalAlignment', 'center')
         totalHourCellRange.style('verticalAlignment', 'center')
 
         const dedicationCellRange = sheet.range(`H${initRange}:H${initRange + teacher.load.length - 1}`)
-        dedicationCellRange.merged(true)
+        teacher.load.length > 1 && dedicationCellRange.merged(true)
         dedicationCellRange.style('horizontalAlignment', 'center')
         dedicationCellRange.style('verticalAlignment', 'center')
 
         const observationCellRange = sheet.range(`I${initRange}:I${initRange + teacher.load.length - 1}`)
-        observationCellRange.merged(true)
+        teacher.load.length > 1 && observationCellRange.merged(true)
         observationCellRange.style('horizontalAlignment', 'center')
         observationCellRange.style('verticalAlignment', 'center')
 
-        sheet.column('A').width(50)
-        sheet.column('B').width(50)
-        sheet.column('C').width(18)
-        sheet.column('H').width(25)
-        sheet.column('I').width(18)
-
         sheet.range(`A${initRange}:I${row - 1}`).style('border', true)
       }
+      // ajustar el ancho de las columnas
+      sheet.column('A').width(50)
+      sheet.column('B').width(50)
+      sheet.column('C').width(18)
+      sheet.column('H').width(25)
+      sheet.column('I').width(18)
 
-      // ajustar el alto a columnas extra
+      // ajustar el alto a filas extra
       for (let i = 0; i < 50; i++) {
         sheet.row(row).height(25)
         row++

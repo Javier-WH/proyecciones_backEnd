@@ -3,12 +3,16 @@ import Proyections from '#models/proyections.js'
 import Config from '#models/config.js'
 import Teachers from '#models/teachers.js'
 import generateSingleQuarterSheet from './singleQuarterSheet.js'
+import generateTriQuarterSheet from './triQuarterSheet copy.js'
 import Contracts from '#models/contractType.js'
 
 export async function generateExcelReport (req, res) {
-  const { pnfId } = req.body
+  const { pnfId, type } = req.body
   if (!pnfId) {
     return res.status(400).json({ message: 'El ID del PNF es requerido' })
+  }
+  if (!type || (type !== 1 && type !== 2)) {
+    return res.status(400).json({ message: 'El tipo de reporte es requerido' })
   }
   try {
     const contracts = await Contracts.findAll({ raw: true })
@@ -77,16 +81,38 @@ export async function generateExcelReport (req, res) {
 
     // Crear un nuevo libro de Excel
     const workbook = await XlsxPopulate.fromBlankAsync()
-    // eslint-disable-next-line no-unused-vars
-    const { sheetNumber, workbook: singleQuaterWarkbook } = generateSingleQuarterSheet({
-      sheetNumber: 0,
-      workbook,
-      pnfArray: groupedByProgram,
-      proyectionDate,
-      contracts
-    })
 
-    singleQuaterWarkbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
+    let responseWarkbook = null
+
+    if (type === 1) {
+      // genera las hojas de trimestres individuales
+      // eslint-disable-next-line no-unused-vars
+      const { sheetNumber, workbook: singleQuaterWarkbook } = generateSingleQuarterSheet({
+        sheetNumber: 0,
+        workbook,
+        pnfArray: groupedByProgram,
+        proyectionDate,
+        contracts
+      })
+      responseWarkbook = singleQuaterWarkbook
+    } else if (type === 2) {
+      // genera la hoja de trimestre completo
+      // eslint-disable-next-line no-unused-vars
+      const { sheetNumber, workbook: triQuaterWarkbook } = generateTriQuarterSheet({
+        sheetNumber: 0,
+        workbook,
+        pnfArray: groupedByProgram,
+        proyectionDate,
+        contracts
+      })
+      responseWarkbook = triQuaterWarkbook
+    }
+
+    if (!responseWarkbook) {
+      return res.status(500).json({ message: 'Error al generar el reporte' })
+    }
+
+    responseWarkbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
     // singleQuaterWarkbook.toFileAsync('/home/dev_uptll/Escritorio/report.xlsx')
 
     return res.status(200).json({ message: 'Proyección generada con exito' })
