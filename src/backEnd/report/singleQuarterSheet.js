@@ -20,6 +20,7 @@ export default function generateSingleQuarterSheet ({
 
       let row = 1
       // encabezado
+
       const rangeLine1 = sheet.range(`A${row}:I${row}`)
       sheet.cell(`A${row}`).value('PERSONAL DOCENTE')
       rangeLine1.merged(true)
@@ -57,6 +58,9 @@ export default function generateSingleQuarterSheet ({
       row++
 
       // encabezado de la tabla
+      const boldHeaderRange = sheet.range(`A${row}:I${row + 1}`)
+      boldHeaderRange.style('bold', true)
+
       const rangeLine6A = sheet.range(`A${row}:A${row + 1}`)
       sheet.cell(`A${row}`).value('Profesor')
       rangeLine6A.merged(true)

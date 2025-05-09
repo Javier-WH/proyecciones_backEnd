@@ -56,6 +56,9 @@ export default function generateTriQuarterSheet ({
     row++
 
     // encabezado de la tabla
+    const boldHeaderRange = sheet.range(`A${row}:M${row + 1}`)
+    boldHeaderRange.style('bold', true)
+
     const rangeLine6A = sheet.range(`A${row}:A${row + 1}`)
     sheet.cell(`A${row}`).value('Profesor')
     rangeLine6A.merged(true)
