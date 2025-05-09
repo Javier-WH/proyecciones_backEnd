@@ -1,53 +1,54 @@
 // este archivo es para sincronizar la tabla Pensum con la tabla Ucs de SAGA
-import fethSubjectAPI from '#fetch/fethSubjectsAPI.js'
-import Pensum from '#models/pensum.js'
-import Pnf from '#models/pnf.js'
-import Subjects from '#models/subjects.js'
-import Trayecto from '#models/trayecto.js'
+import fethSubjectAPI from "#fetch/fethSubjectsAPI.js";
+import Pensum from "#models/pensum.js";
+import Pnf from "#models/pnf.js";
+import Subjects from "#models/subjects.js";
+import Trayecto from "#models/trayecto.js";
 
-export default async function syncSagaUcs () {
-  const sagaSubjects = await fethSubjectAPI()
+export default async function syncSagaUcs() {
+  const sagaSubjects = await fethSubjectAPI();
+
+  /*console.log(sagaSubjects.filter((item) => item.programa_info.id === 13 && item.trayecto_info.id === 1));*/
 
   if (sagaSubjects === null) {
-    console.log('No se han podido sincronizar el pensum')
-    return
+    console.log("No se han podido sincronizar el pensum");
+    return;
   }
 
-  const pensumItems = []
+  const pensumItems = [];
   try {
     for (const item of sagaSubjects) {
-      const trayectoSagaId = item.trayecto_info.id
+      const trayectoSagaId = item.trayecto_info.id;
       const trayecto = await Trayecto.findOne({
         where: { saga_id: trayectoSagaId },
-        raw: true
-      })
-      const trayectoId = trayecto?.id
+        raw: true,
+      });
+      const trayectoId = trayecto?.id;
 
       const pnf = await Pnf.findOne({
         where: { saga_id: item.programa_info.id },
-        raw: true
-      })
+        raw: true,
+      });
       const subject = await Subjects.findOne({
         where: { name: item?.description?.trim() },
-        raw: true
-      })
+        raw: true,
+      });
 
-      const quarteData = item?.quarters
+      const quarteData = item?.quarters;
       const quarter = [
         ...(quarteData?.q1 === 1 ? [1] : []),
         ...(quarteData?.q2 === 1 ? [2] : []),
-        ...(quarteData?.q3 === 1 ? [3] : [])
-      ]
+        ...(quarteData?.q3 === 1 ? [3] : []),
+      ];
 
-      let hours = Math.floor(item?.hours?.total)
+      const { total, times } = item.hours;
 
-      const count = Object.values(quarteData).filter(value => value === 1).length
+      let quarterHours = 0;
+      let weekHours = 0;
 
-      if (!hours) {
-        hours = null // si las horas son undefinded, null o 0, se pone como null
-      } else {
-        hours = Number(hours) / 12
-        //  hours = (Number(hours) / count) / 12
+      if (total && times && isNaN(total) === false && isNaN(times) === false) {
+        quarterHours = total / times;
+        weekHours = quarterHours / 12;
       }
 
       pensumItems.push({
@@ -55,18 +56,18 @@ export default async function syncSagaUcs () {
         pnf_id: pnf?.id ?? null,
         subject_id: subject?.id ?? null,
         trayecto_id: trayectoId,
-        hours,
-        quarter: `[${String(quarter)}]`
-      })
+        hours: weekHours,
+        quarter: `[${String(quarter)}]`,
+      });
     }
 
     await Pensum.bulkCreate(pensumItems, {
-      fields: ['id', 'pnf_id', 'subject_id', 'trayecto_id', 'hours', 'quarter'],
-      // updateOnDuplicate: ['hours', 'quarter'],
-      ignoreDuplicates: true
-    })
-    console.log('Pensum sincronizado')
+      fields: ["id", "pnf_id", "subject_id", "trayecto_id", "hours", "quarter"],
+      updateOnDuplicate: ["hours", "quarter"],
+      //ignoreDuplicates: true,
+    });
+    console.log("Pensum sincronizado");
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
