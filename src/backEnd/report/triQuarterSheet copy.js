@@ -169,7 +169,7 @@ export default function generateTriQuarterSheet ({
     for (const [teacherIndex, teacher] of teachers.entries()) {
       const teacherHours = getTeacherHous(teacher.load)
       // console.log(teacher);
-      sheet.cell(`A${row}`).value(`${teacher.last_name} ${teacher.name}`)
+      sheet.cell(`A${row}`).value(`${teacher.last_name} ${teacher.name}`.toUpperCase())
       sheet.cell(`A${row}`).style('wrapText', true)
       const initRange = row
       for (const [subjectIndex, subject] of teacher.load.entries()) {
