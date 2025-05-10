@@ -170,7 +170,7 @@ export default function generateTriQuarterSheet ({
 
     // datos de la tabla
     for (const [teacherIndex, teacher] of teachers.entries()) {
-      const teacherHours = getTeacherHous(teacher.load)
+      const teacherHours = getTeacherHous(teacher.load, teacher.id)
       // console.log(teacher);
       sheet.cell(`A${row}`).value(`${teacher.last_name} ${teacher.name}`.toUpperCase())
       sheet.cell(`A${row}`).style('wrapText', true)
@@ -187,17 +187,23 @@ export default function generateTriQuarterSheet ({
         sheet.cell(`D${row}`).value(`${subject.turnoName[0]}-0${subject.seccion}`)
         sheet.cell(`E${row}`).value(subject.turnoName)
 
-        sheet.cell(`F${row}`).value(subject?.hours?.q1 || 0)
+        subject?.quarter?.q1 === teacher.id
+          ? sheet.cell(`F${row}`).value(subject?.hours?.q1 || 0)
+          : sheet.cell(`F${row}`).value(0)
         sheet.cell(`F${row}`).style('horizontalAlignment', 'center')
         subjectIndex === 0 && sheet.cell(`G${row}`).value(teacherHours.q1)
         sheet.cell(`G${row}`).style('horizontalAlignment', 'center')
 
-        sheet.cell(`H${row}`).value(subject?.hours?.q2 || 0)
+        subject?.quarter?.q2 === teacher.id
+          ? sheet.cell(`H${row}`).value(subject?.hours?.q2 || 0)
+          : sheet.cell(`H${row}`).value(0)
         sheet.cell(`H${row}`).style('horizontalAlignment', 'center')
         subjectIndex === 0 && sheet.cell(`I${row}`).value(teacherHours.q2)
         sheet.cell(`I${row}`).style('horizontalAlignment', 'center')
 
-        sheet.cell(`J${row}`).value(subject?.hours?.q3 || 0)
+        subject?.quarter?.q3 === teacher.id
+          ? sheet.cell(`J${row}`).value(subject?.hours?.q3 || 0)
+          : sheet.cell(`J${row}`).value(0)
         sheet.cell(`J${row}`).style('horizontalAlignment', 'center')
         subjectIndex === 0 && sheet.cell(`K${row}`).value(teacherHours.q3)
         sheet.cell(`K${row}`).style('horizontalAlignment', 'center')

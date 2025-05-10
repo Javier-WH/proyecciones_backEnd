@@ -1,4 +1,4 @@
-export function getTeacherHous (teacherLoad) {
+export function getTeacherHous (teacherLoad, teacherId) {
   // Inicializamos un objeto para almacenar las sumas
   const totalHoras = {
     q1: 0,
@@ -12,13 +12,13 @@ export function getTeacherHous (teacherLoad) {
     if (item.hours && typeof item.hours === 'object') {
       // Sumamos las horas, convirtiendo los valores a números usando el operador unario '+'
       // Añadimos un check para asegurarnos de que la clave existe antes de sumar
-      if (item.hours.q1 !== undefined) {
+      if (item.hours.q1 !== undefined && item?.quarter?.q1 === teacherId) {
         totalHoras.q1 += +item.hours.q1
       }
-      if (item.hours.q2 !== undefined) {
+      if (item.hours.q2 !== undefined && item?.quarter?.q2 === teacherId) {
         totalHoras.q2 += +item.hours.q2
       }
-      if (item.hours.q3 !== undefined) {
+      if (item.hours.q3 !== undefined && item?.quarter?.q3 === teacherId) {
         totalHoras.q3 += +item.hours.q3
       }
     }
