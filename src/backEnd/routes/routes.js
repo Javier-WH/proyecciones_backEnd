@@ -144,4 +144,8 @@ Router.delete('/pensum/:id', deletePensum)
 
 Router.delete('/pnf/:id', deletePNF)
 
+Router.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'frontEnd', 'index.html'))
+})
+
 export default Router
