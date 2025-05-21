@@ -119,18 +119,29 @@ export async function generateExcelReport(req, res) {
       return res.status(500).json({ message: "Error al generar el reporte" });
     }
 
-    // responseWarkbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
-    // singleQuaterWarkbook.toFileAsync('/home/dev_uptll/Escritorio/report.xlsx')
-
-    // return res.status(200).json({ message: 'Proyección generada con exito' })
-
-    // return workbook.toFileAsync('C:/Users/Axioma/Desktop/report.xlsx')
-
     // Generar el archivo de Excel en un buffer en memoria
     const data = await workbook.outputAsync();
 
+    // obtener el nombre de la proyección
+    const proyectionName = cleanFileNamePart(proyection?.name);
+
+    // obtener el nombre del pnf
+    const pnfName = cleanFileNamePart(filteredSubjects[0]?.pnf).replace("P.N.F._en_", "");
+
+    // --- Obtener y formatear la fecha actual ---
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
+
+    // tipo de reporte
+    const reportType = type === 1 ? "trimestral" : "anual";
+
+    // crea un numbre de archivo
+    const filename = `${proyectionName}-${pnfName}-${reportType}-(${formattedDate}).xlsx`;
+
     // Configurar las cabeceras de la respuesta para la descarga del archivo
-    const filename = "reporte.xlsx";
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
 
@@ -247,4 +258,23 @@ function formatQuarterDateRange(dateString) {
   // Construct the final string in the desired format
   return `${startMonthName} – ${endMonthName} ${year}`;
 }
+
+const cleanFileNamePart = (text) => {
+  if (!text) return "desconocido";
+
+  // 1. Reemplazar vocales con tilde por vocales sin tilde
+  let cleanedText = text
+    .normalize("NFD") // Descompone caracteres acentuados en su forma base y el acento
+    .replace(/[\u0300-\u036f]/g, ""); // Elimina los diacríticos (acentos)
+
+  // 2. Reemplazar uno o más espacios en blanco por un guion,
+  //    pero si ya hay un guion rodeado de espacios, simplemente normaliza los espacios adyacentes.
+  //    Primero, reemplazamos " - " por un guion, luego todos los demás espacios por guiones.
+  //    Esto evita tener "palabra1---palabra2"
+  cleanedText = cleanedText
+    .replace(/\s*-\s*/g, "_") // Reemplaza " - " o " - " o " - " por un solo guion
+    .replace(/\s+/g, "_"); // Reemplaza cualquier otro grupo de espacios por un guion
+
+  return cleanedText;
+};
 
