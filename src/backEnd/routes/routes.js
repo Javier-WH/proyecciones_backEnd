@@ -26,7 +26,12 @@ import createProyection from "#querys/proyections/createProyection.js";
 import getProyections from "#querys/proyections/getProyection.js";
 import getActiveProyection from "#querys/proyections/getActiveProyection.js";
 import setActiveProyection from "#querys/proyections/setActiveProyection.js";
-import { createUserController, loginUserController } from "#querys/user/userController.js";
+import {
+  createUserController,
+  loginUserController,
+  getUserController,
+  updateUserController,
+} from "#querys/user/userController.js";
 import { getContractTypes, updateContractType } from "#querys/Contracts/Contracts.js";
 import { generateExcelReport } from "../report/excelReport.js";
 const Router = express.Router();
@@ -88,6 +93,8 @@ Router.get("/config", getActiveProyection);
 
 Router.get("/contractTypes", getContractTypes);
 
+Router.get("/user", getUserController);
+
 /// ///////////put
 
 Router.put("/trayectos", express.json(), async (req, res) => {
@@ -96,6 +103,8 @@ Router.put("/trayectos", express.json(), async (req, res) => {
 });
 
 Router.put("/contractType", express.json(), updateContractType);
+
+Router.put("/user", express.json(), updateUserController);
 
 // ///////////post
 

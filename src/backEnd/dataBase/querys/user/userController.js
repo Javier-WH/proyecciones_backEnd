@@ -66,3 +66,64 @@ export async function loginUserController(req, res) {
   }
 }
 
+export async function getUserController(req, res) {
+  const { ci } = req.query;
+
+  if (!ci) {
+    return res.status(400).json({ error: "La cédula es requerida" });
+  }
+
+  try {
+    const user = await Users.findOne({
+      where: { ci },
+      attributes: ["id", "user", "name", "last_name", "ci", "su", "pnf_id"],
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener el usuario" });
+  }
+}
+
+export async function updateUserController(req, res) {
+  const { name, last_name, ci, user, password, su, pnf_id } = req.body;
+
+  if (!ci) {
+    return res.status(400).json({ error: "La cédula es requerida" });
+  }
+
+  let data = {};
+
+  if (name) data.name = name;
+  if (last_name) data.last_name = last_name;
+  if (user) data.user = user;
+  if (password) data.password = bcrypt.hashSync(password, saltRounds);
+  if (su) data.su = su;
+  if (pnf_id) data.pnf_id = pnf_id;
+
+  if (Object.keys(data).length === 0) {
+    return res.status(400).json({ error: "No se proporcionaron datos para actualizar" });
+  }
+
+  try {
+    const user = await Users.findOne({
+      where: { ci },
+      attributes: ["id", "user", "name", "last_name", "ci", "su", "pnf_id"],
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    await Users.update(data, { where: { ci } });
+
+    res.status(200).json({ message: "Usuario actualizado exitosamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar el usuario" });
+  }
+}
+
