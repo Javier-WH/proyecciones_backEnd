@@ -1,129 +1,152 @@
 /* eslint-disable camelcase */
-import { validateCreateUserData, validateLoginUserData } from "./validateUserData.js";
-import Users from "#models/users.js";
-import Pensum from "#models/pensum.js";
-import { createUser } from "./userAux/userAux.js";
-import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
+import { validateCreateUserData, validateLoginUserData } from './validateUserData.js'
+import Users from '#models/users.js'
+import Pensum from '#models/pensum.js'
+import { createUser } from './userAux/userAux.js'
+import { v4 as uuidv4 } from 'uuid'
+import bcrypt from 'bcrypt'
 
-const saltRounds = 10;
+const saltRounds = 10
 
-export async function createUserController(req, res) {
-  const { error, value } = validateCreateUserData(req.body);
+export async function createUserController (req, res) {
+  const { error, value } = validateCreateUserData(req.body)
 
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json({ error: error.details[0].message })
   }
 
   try {
-    value.id = uuidv4();
-    value.password = bcrypt.hashSync(value.password, saltRounds);
-    const request = await createUser(value);
+    value.id = uuidv4()
+    value.password = bcrypt.hashSync(value.password, saltRounds)
+    const request = await createUser(value)
     if (request.error) {
-      return res.status(400).json({ error: request.message });
+      return res.status(400).json({ error: request.message })
     }
-    res.status(200).json({ message: "Usuario creado exitosamente" });
+    res.status(200).json({ message: 'Usuario creado exitosamente' })
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error })
   }
 }
 
-export async function loginUserController(req, res) {
-  const { error, value } = validateLoginUserData(req.body);
+export async function loginUserController (req, res) {
+  const { error, value } = validateLoginUserData(req.body)
 
   if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+    return res.status(400).json({ error: error.details[0].message })
   }
 
   try {
     const user = await Users.findOne({
       where: {
-        user: value.user,
-      },
-    });
+        user: value.user
+      }
+    })
     if (!user) {
-      return res.status(401).json({ error: "El usuario no está registrado" });
+      return res.status(401).json({ error: 'El usuario no está registrado' })
     }
 
     if (!bcrypt.compareSync(value.password, user.password)) {
-      return res.status(401).json({ error: "La contraseña es incorrecta" });
+      return res.status(401).json({ error: 'La contraseña es incorrecta' })
     }
 
-    const { pnf_id, name, last_name, ci, su } = user;
+    const { pnf_id, name, last_name, ci, su } = user
 
     const userData = {
       name: `${name} ${last_name}`,
       ci,
-      su,
-    };
+      su
+    }
 
-    const requestPensum = await Pensum.findAll({ attributes: ["subject_id"], where: { pnf_id }, raw: true });
-    const perfil = requestPensum.map((item) => item.subject_id);
+    const requestPensum = await Pensum.findAll({ attributes: ['subject_id'], where: { pnf_id }, raw: true })
+    const perfil = requestPensum.map((item) => item.subject_id)
 
-    res.status(200).json({ message: "Inicio de sesión exitoso", pnf_id, perfil, userData });
+    res.status(200).json({ message: 'Inicio de sesión exitoso', pnf_id, perfil, userData })
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(500).json({ error })
   }
 }
 
-export async function getUserController(req, res) {
-  const { ci } = req.query;
+export async function getUserController (req, res) {
+  const { ci } = req.query
 
   if (!ci) {
-    return res.status(400).json({ error: "La cédula es requerida" });
+    return res.status(400).json({ error: 'La cédula es requerida' })
   }
 
   try {
     const user = await Users.findOne({
       where: { ci },
-      attributes: ["id", "user", "name", "last_name", "ci", "su", "pnf_id"],
-    });
+      attributes: ['id', 'user', 'name', 'last_name', 'ci', 'su', 'pnf_id']
+    })
 
     if (!user) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
+      return res.status(404).json({ error: 'Usuario no encontrado' })
     }
 
-    res.status(200).json(user);
+    res.status(200).json(user)
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener el usuario" });
+    res.status(500).json({ error: 'Error al obtener el usuario' })
   }
 }
 
-export async function updateUserController(req, res) {
-  const { name, last_name, ci, user, password, su, pnf_id } = req.body;
+export async function updateUserController (req, res) {
+  const { name, last_name, ci, user, password, su, pnf_id } = req.body
 
   if (!ci) {
-    return res.status(400).json({ error: "La cédula es requerida" });
+    return res.status(400).json({ error: 'La cédula es requerida' })
   }
 
-  let data = {};
+  const data = {}
 
-  if (name) data.name = name;
-  if (last_name) data.last_name = last_name;
-  if (user) data.user = user;
-  if (password) data.password = bcrypt.hashSync(password, saltRounds);
-  if (su) data.su = su;
-  if (pnf_id) data.pnf_id = pnf_id;
+  if (name) data.name = name
+  if (last_name) data.last_name = last_name
+  if (user) data.user = user
+  if (password) data.password = bcrypt.hashSync(password, saltRounds)
+  if (su) data.su = su
+  if (pnf_id) data.pnf_id = pnf_id
 
   if (Object.keys(data).length === 0) {
-    return res.status(400).json({ error: "No se proporcionaron datos para actualizar" });
+    return res.status(400).json({ error: 'No se proporcionaron datos para actualizar' })
   }
 
   try {
     const user = await Users.findOne({
       where: { ci },
-      attributes: ["id", "user", "name", "last_name", "ci", "su", "pnf_id"],
-    });
+      attributes: ['id', 'user', 'name', 'last_name', 'ci', 'su', 'pnf_id']
+    })
 
     if (!user) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
+      return res.status(404).json({ error: 'Usuario no encontrado' })
     }
 
-    await Users.update(data, { where: { ci } });
+    await Users.update(data, { where: { ci } })
 
-    res.status(200).json({ message: "Usuario actualizado exitosamente" });
+    res.status(200).json({ message: 'Usuario actualizado exitosamente' })
   } catch (error) {
-    res.status(500).json({ error: "Error al actualizar el usuario" });
+    res.status(500).json({ error: 'Error al actualizar el usuario' })
   }
 }
 
+export async function deleteUserController (req, res) {
+  const { ci } = req.body
+  if (!ci) {
+    return res.status(400).json({ error: 'La cédula es requerida' })
+  }
+
+  try {
+    const user = await Users.findOne({
+      where: { ci },
+      attributes: ['id', 'user', 'name', 'last_name', 'ci', 'su', 'pnf_id']
+    })
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' })
+    }
+
+    await Users.destroy({ where: { ci } })
+
+    res.status(200).json({ message: 'Usuario eliminado exitosamente' })
+  } catch (error) {
+    res.status(500).json({ error: 'Error al eliminar el usuario' })
+  }
+}
