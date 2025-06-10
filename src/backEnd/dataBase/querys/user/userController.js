@@ -49,12 +49,21 @@ export async function loginUserController (req, res) {
       return res.status(401).json({ error: 'La contraseña es incorrecta' })
     }
 
-    const { pnf_id, name, last_name, ci, su } = user
+    const { pnf_id, name, last_name, ci, su, id } = user
 
     const userData = {
       name: `${name} ${last_name}`,
       ci,
       su
+    }
+
+    req.session.user = {
+      pnf_id,
+      name,
+      last_name,
+      ci,
+      su,
+      id
     }
 
     const requestPensum = await Pensum.findAll({ attributes: ['subject_id'], where: { pnf_id }, raw: true })
