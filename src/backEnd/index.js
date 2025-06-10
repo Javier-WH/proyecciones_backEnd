@@ -1,41 +1,68 @@
-import { createServer } from "node:http";
-import express from "express";
-import dotenv from "dotenv";
-import configureStatic from "./config/static/configureStatic.js";
-import configureCors from "./config/cors/corsConfig.js";
-import Routes from "./routes/routes.js";
-import setupSocket from "./socket/socket.js";
-import getServerIP from "./utils/serverIP.js";
-import { createTables } from "./dataBase/create/createTables.js";
-import setTableRelations from "./dataBase/relations/tableRelations.js";
-import syncSagaTables from "./dataBase/sycnSagaDB/syncSagaTables.js";
-import { log } from "node:console";
+import { createServer } from 'node:http'
+import express from 'express'
+import dotenv from 'dotenv'
+import configureStatic from './config/static/configureStatic.js'
+import configureCors from './config/cors/corsConfig.js'
+import Routes from './routes/routes.js'
+import setupSocket from './socket/socket.js'
+import getServerIP from './utils/serverIP.js'
+import { createTables } from './dataBase/create/createTables.js'
+import setTableRelations from './dataBase/relations/tableRelations.js'
+import syncSagaTables from './dataBase/sycnSagaDB/syncSagaTables.js'
+import session from 'express-session'
+import connectSessionSequelize from 'connect-session-sequelize'
+import sequelize from '#dataBaseConnection'
 
-dotenv.config();
-const app = express();
-const server = createServer(app);
+dotenv.config()
+const app = express()
+const server = createServer(app)
+
+// session
+const SequelizeStore = connectSessionSequelize(session.Store)
+
+const sessionStore = new SequelizeStore({
+  db: sequelize,
+  tableName: 'sessions',
+  checkExpirationInterval: 15 * 60 * 1000,
+  expiration: 24 * 60 * 60 * 1000
+})
+
 // base de datos
-createTables();
-setTableRelations();
-syncSagaTables();
+createTables()
+setTableRelations()
+syncSagaTables()
+await sessionStore.sync()
+
+// Configuración de middleware de sesión
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'UPTLL_Juana_Ramirez',
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax'
+  }
+}))
 
 // cors
-configureCors(app);
+configureCors(app)
 
 // archivos estaticos
-configureStatic(app);
+configureStatic(app)
 
 // rutas
-app.use(Routes);
+app.use(Routes)
 
 // socket
-setupSocket(server);
+setupSocket(server)
 
-const port = process.env.PORT || 3000;
-const host = process.env.IP || "0.0.0.0";
+const port = process.env.PORT || 3000
+const host = process.env.IP || '0.0.0.0'
 
 server.listen(port, host, () => {
   // console.clear()
-  console.log(`Servidor corriendo en el socket http://${getServerIP()}:${port}`);
-});
-
+  console.log(`Servidor corriendo en el socket http://${getServerIP()}:${port}`)
+})
