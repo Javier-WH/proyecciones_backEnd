@@ -12,6 +12,7 @@ import proyectionRoutes from './proyectionRoutes/proyectionRoutes.js'
 import profileRoutes from './profileRoutes/profileRoutes.js'
 import contractRoutes from './contractRoutes/contracRoutes.js'
 import simpleDataRoutes from './simpleDataRoutes/simpleDataRoutes.js'
+import { validateLogedUser } from '../middlewares/middlewares.js'
 const Router = express.Router()
 
 // Obtener la ruta absoluta del directorio actual
@@ -19,6 +20,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 Router.use(userRoutes)
+Router.use(validateLogedUser) // middleware que verifica si el usuario inició sesión
 Router.use(teacherRoutes)
 Router.use(pnfRoutes)
 Router.use(subjectsRoutes)

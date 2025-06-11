@@ -20,7 +20,8 @@
     "#ApiToken": "./src/backEnd/dataBase/querys/Autorization/getApiToken.js",
     "#utils/*": "./src/backEnd/utils/*",
     "#proyeccion/*": "./src/backEnd/proyeccion/*",
-    "#dev/*": "./src/dev/*"
+    "#dev/*": "./src/dev/*",
+    "#middlewares/*": "./src/backEnd/middlewares/*"
   },
   "keywords": [],
   "author": "",

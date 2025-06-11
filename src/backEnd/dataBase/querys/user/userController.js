@@ -75,6 +75,15 @@ export async function loginUserController (req, res) {
   }
 }
 
+export const logoutUserController = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error al cerrar la sesión' })
+    }
+    res.status(200).json({ message: 'Sesión cerrada exitosamente' })
+  })
+}
+
 export async function getUserController (req, res) {
   const { ci } = req.query
 

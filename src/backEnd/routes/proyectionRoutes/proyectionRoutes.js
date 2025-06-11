@@ -5,6 +5,7 @@ import getActiveProyection from '#querys/proyections/getActiveProyection.js'
 import setActiveProyection from '#querys/proyections/setActiveProyection.js'
 import getProyections from '#querys/proyections/getProyection.js'
 import express from 'express'
+import { validateAdminUser } from '#middlewares/middlewares.js'
 const Router = express.Router()
 
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
@@ -17,6 +18,6 @@ Router.get('/config', getActiveProyection)
 
 Router.post('/proyeccion', express.json(), createProyection)
 
-Router.post('/setProyection', express.json(), setActiveProyection)
+Router.post('/setProyection', validateAdminUser, express.json(), setActiveProyection)
 
 export default Router

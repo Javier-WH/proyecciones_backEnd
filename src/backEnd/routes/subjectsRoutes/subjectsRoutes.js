@@ -3,6 +3,7 @@ import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
 import postPensum from '#querys/subjects/postPensum.js'
 import postSubject from '#querys/subjects/postSubject.js'
 import express from 'express'
+import { validateAdminUser } from '#middlewares/middlewares.js'
 const Router = express.Router()
 
 Router.get('/subjects', async (_, res) => {
@@ -10,10 +11,10 @@ Router.get('/subjects', async (_, res) => {
   res.json(subjects)
 })
 
-Router.post('/subject', express.json(), postSubject)
+Router.post('/subject', validateAdminUser, express.json(), postSubject)
 
-Router.post('/pensum', express.json(), postPensum)
+Router.post('/pensum', validateAdminUser, express.json(), postPensum)
 
-Router.delete('/pensum/:id', deletePensum)
+Router.delete('/pensum/:id', validateAdminUser, deletePensum)
 
 export default Router
