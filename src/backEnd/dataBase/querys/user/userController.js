@@ -80,6 +80,7 @@ export const logoutUserController = (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Error al cerrar la sesión' })
     }
+    console.log('Sesión cerrada exitosamente')
     res.status(200).json({ message: 'Sesión cerrada exitosamente' })
   })
 }

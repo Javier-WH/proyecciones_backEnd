@@ -111,12 +111,12 @@ export default function setupSocket (server, sessionMiddleware) {
       } */
 
       // Verificar si el usuario ha iniciado sesión antes de actualizar
-      const user = socket?.request?.session?.user
+      /* const user = socket?.request?.session?.user
       if (!user) {
         console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
         socket.disconnect()
         return
-      }
+      } */
 
       subjects = newSubjects
       updateProyection({
