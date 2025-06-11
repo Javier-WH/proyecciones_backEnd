@@ -61,7 +61,6 @@ export function uploadPhoto (req, res) {
     if (!req.file) {
       return res.status(400).json({ error: 'No se proporcionó ninguna imagen' })
     }
-    console.log(req.body.name)
     // Respuesta exitosa
     res.status(200).json({
       message: 'Foto subida exitosamente',
