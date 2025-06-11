@@ -34,7 +34,8 @@ syncSagaTables()
 await sessionStore.sync()
 
 // Configuración de middleware de sesión
-app.use(session({
+
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'UPTLL_Juana_Ramirez',
   store: sessionStore,
   resave: false,
@@ -45,7 +46,9 @@ app.use(session({
     httpOnly: true,
     sameSite: 'lax'
   }
-}))
+})
+
+app.use(sessionMiddleware)
 
 // cors
 configureCors(app)
@@ -57,7 +60,7 @@ configureStatic(app)
 app.use(Routes)
 
 // socket
-setupSocket(server)
+setupSocket(server, sessionMiddleware)
 
 const port = process.env.PORT || 3000
 const host = process.env.IP || '0.0.0.0'
