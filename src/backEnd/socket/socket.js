@@ -69,11 +69,11 @@ export async function setTeacherList () {
 export default function setupSocket (server, sessionMiddleware) {
   io = new Server(server, {
     cors: {
-      origin: '*'
-      // credentials: true
+      origin: '*',
+      credentials: true
     }
   })
-  // io.engine.use(sessionMiddleware)
+  io.engine.use(sessionMiddleware)
   // Conexión WebSocket
   io.on('connection', (socket) => {
     // console.log('Usuario conectado')
@@ -111,12 +111,12 @@ export default function setupSocket (server, sessionMiddleware) {
       } */
 
       // Verificar si el usuario ha iniciado sesión antes de actualizar
-      /* const user = socket?.request?.session?.user
+      const user = socket?.request?.session?.user
       if (!user) {
         console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
         socket.disconnect()
         return
-      } */
+      }
 
       subjects = newSubjects
       updateProyection({
