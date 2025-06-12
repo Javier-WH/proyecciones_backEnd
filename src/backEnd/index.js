@@ -16,7 +16,7 @@ import sequelize from '#dataBaseConnection'
 dotenv.config()
 const app = express()
 const server = createServer(app)
-
+app.set('trust proxy', 1)
 // session
 const SequelizeStore = connectSessionSequelize(session.Store)
 
@@ -33,8 +33,10 @@ setTableRelations()
 syncSagaTables()
 await sessionStore.sync()
 
-// Configuración de middleware de sesión
+// cors
+configureCors(app)
 
+// Configuración de middleware de sesión
 const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'UPTLL_Juana_Ramirez',
   store: sessionStore,
@@ -42,16 +44,13 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     httpOnly: true,
     sameSite: 'lax'
   }
 })
 
 app.use(sessionMiddleware)
-
-// cors
-configureCors(app)
 
 // archivos estaticos
 configureStatic(app)

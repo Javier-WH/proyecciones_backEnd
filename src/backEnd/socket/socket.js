@@ -69,14 +69,14 @@ export async function setTeacherList () {
 export default function setupSocket (server, sessionMiddleware) {
   io = new Server(server, {
     cors: {
-      origin: '*',
-      credentials: true
+      origin: '*'
+      // credentials: true
     }
   })
-  io.engine.use(sessionMiddleware)
+  // io.engine.use(sessionMiddleware)
   // Conexión WebSocket
   io.on('connection', (socket) => {
-    console.log('Usuario conectado')
+    // console.log('Usuario conectado')
 
     // Enviar el array de profesores y asignaturas al cliente
     socket.emit('updateTeachers', teachers)
@@ -135,12 +135,12 @@ export default function setupSocket (server, sessionMiddleware) {
     })
 
     socket.on('reload', () => {
-      const user = socket?.request?.session?.user
+      /*    const user = socket?.request?.session?.user
       if (!user) {
         console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
         socket.disconnect()
         return
-      }
+      } */
       loadProyection().then(() => {
         socket.emit('updateTeachers', teachers)
         socket.emit('updateSubjects', subjects)

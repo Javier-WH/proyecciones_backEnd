@@ -1,6 +1,8 @@
 export function validateLogedUser (req, res, next) {
   if (process.env.NODE_ENV !== 'production') return next()
-  if (req?.session?.user || req.path === '/') {
+  if (req.path === '/') {
+    next()
+  } else if (req?.session?.user) {
     next()
   } else {
     return res.redirect('/')

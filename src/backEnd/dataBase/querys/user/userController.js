@@ -66,10 +66,31 @@ export async function loginUserController (req, res) {
       id
     }
 
-    const requestPensum = await Pensum.findAll({ attributes: ['subject_id'], where: { pnf_id }, raw: true })
+    req.session.save(async (err) => {
+      if (err) {
+        console.error('Error saving session:', err)
+        return res.status(500).json({ error: 'Error al guardar la sesión' })
+      }
+
+      const requestPensum = await Pensum.findAll({
+        attributes: ['subject_id'],
+        where: { pnf_id },
+        raw: true
+      })
+
+      const perfil = requestPensum.map((item) => item.subject_id)
+      res.status(200).json({
+        message: 'Inicio de sesión exitoso',
+        pnf_id,
+        perfil,
+        userData
+      })
+    })
+
+    /*  const requestPensum = await Pensum.findAll({ attributes: ['subject_id'], where: { pnf_id }, raw: true })
     const perfil = requestPensum.map((item) => item.subject_id)
 
-    res.status(200).json({ message: 'Inicio de sesión exitoso', pnf_id, perfil, userData })
+    res.status(200).json({ message: 'Inicio de sesión exitoso', pnf_id, perfil, userData }) */
   } catch (error) {
     res.status(500).json({ error })
   }

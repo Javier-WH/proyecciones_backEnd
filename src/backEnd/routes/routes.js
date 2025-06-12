@@ -20,7 +20,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 Router.use(userRoutes)
-Router.use(validateLogedUser) // middleware que verifica si el usuario inició sesión
+Router.all('*', validateLogedUser) // middleware que verifica si el usuario inició sesión
 Router.use(teacherRoutes)
 Router.use(pnfRoutes)
 Router.use(subjectsRoutes)
