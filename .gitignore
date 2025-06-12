@@ -1,7 +1,4 @@
-*.env
-.env
-env
-./env
+
 # Logs
 logs
 *.log
@@ -16,6 +13,7 @@ dist
 dist-ssr
 *.local
 *.jpg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,6 +24,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-
-.env
