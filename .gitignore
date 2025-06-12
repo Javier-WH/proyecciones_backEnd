@@ -15,7 +15,7 @@ node_modules
 dist
 dist-ssr
 *.local
-
+*.jpg
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -28,3 +28,4 @@ dist-ssr
 *.sw?
 
 
+.env
