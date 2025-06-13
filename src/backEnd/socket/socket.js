@@ -3,6 +3,7 @@ import getTeacherList from '#querys/teachers/getTeacherList.js'
 import { checkIfProyectionExists } from './socketUtils.js'
 import { updateProyection } from '../dataBase/create/updateProyection.js'
 import Config from '#models/config.js'
+import validateSubjectData from '#utils/validateSubject.js'
 
 let io = null
 
@@ -69,12 +70,6 @@ export default function setupSocket (server, sessionMiddleware) {
 
     // Escuchar eventos de actualización de asignaturas
     socket.on('updateSubjects', (newSubjects) => {
-      /* const validName = validateSubjectData(newSubjects);
-      if (validName.error) {
-        console.log(validName.error);
-        return;
-      } */
-
       // Verificar si el usuario ha iniciado sesión antes de actualizar
       if (process.env.NODE_ENV !== 'dev') {
         const user = socket?.request?.session?.user
@@ -85,13 +80,24 @@ export default function setupSocket (server, sessionMiddleware) {
         }
       }
 
+      // verificar que el array de materias tiene el formato correcto
+      const validName = validateSubjectData(newSubjects)
+      if (validName.error) {
+        console.log(validName.error)
+        return
+      }
+
+      // Actualizar el array de asignaturas para el socket
       subjects = newSubjects
+      // actualizar la base de datos de manera asincrona
       updateProyection({
         id: currentProyectionId,
         teachers: JSON.stringify(teachers),
         subjects: JSON.stringify(subjects)
 
       })
+
+      // Emitir la actualización de asignaturas a todos los clientes
       io.emit('updateSubjects', subjects)
     })
 
