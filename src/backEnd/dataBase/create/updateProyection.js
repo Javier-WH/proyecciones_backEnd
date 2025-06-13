@@ -1,14 +1,12 @@
 /* eslint-disable camelcase */
 import Proyections from '#models/proyections.js'
 
-export async function updateProyection ({ id, subjects, proyection, teachers, proyections_done }) {
+export async function updateProyection ({ id, subjects }) {
   if (!id) return false
-  if (!proyection && !teachers && !proyections_done) return false
+  if (!subjects) return false
 
   const params = {}
   if (subjects) params.subjects = subjects
-  if (teachers) params.teachers = teachers
-  if (proyections_done) params.proyections_done = proyections_done
 
   try {
     await Proyections.update(params, { where: { id } })

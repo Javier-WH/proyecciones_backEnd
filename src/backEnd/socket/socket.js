@@ -1,6 +1,4 @@
 import { Server } from 'socket.io'
-// import validateTeacherData from '#utils/validateTeacherData.js'
-
 import getTeacherList from '#querys/teachers/getTeacherList.js'
 import { checkIfProyectionExists } from './socketUtils.js'
 import { updateProyection } from '../dataBase/create/updateProyection.js'
@@ -11,17 +9,10 @@ let io = null
 let currentProyectionId = ''
 
 // Array de profesores
-let teachers = {
-  q1: [],
-  q2: [],
-  q3: []
-}
+let teachers = []
 
 // array de asignaturas
 let subjects = []
-
-// array de proyecciones realizadas
-let proyectionsDone = []
 
 // Nombre de la proyección
 let proyectionName = 'desconocido'
@@ -50,19 +41,11 @@ const loadProyection = async () => {
   if (proyeccion?.subjects) {
     subjects = await JSON.parse(proyeccion.subjects)
   }
-  if (proyeccion?.proyections_done) {
-    proyectionsDone = await JSON.parse(proyeccion.proyections_done)
-  }
 }
 
 export async function setTeacherList () {
   const teacherList = await getTeacherList()
-
-  teachers = {
-    q1: [...teacherList],
-    q2: [...teacherList],
-    q3: [...teacherList]
-  }
+  teachers = teacherList
   io?.emit('updateTeachers', teachers)
 }
 
@@ -81,26 +64,8 @@ export default function setupSocket (server, sessionMiddleware) {
     // Enviar el array de profesores y asignaturas al cliente
     socket.emit('updateTeachers', teachers)
     socket.emit('updateSubjects', subjects)
-    socket.emit('proyectionsDone', proyectionsDone)
+
     socket.emit('proyectionData', { proyectionName, proyectionId })
-
-    // Escuchar eventos de actualización de profesores
-    socket.on('updateTeachers', (newTeachers) => {
-      /* const validName = validateTeacherData(newTeachers)
-      if (validName.error) {
-        console.log(validName.error.message)
-        return
-      } */
-      teachers = newTeachers
-      updateProyection({
-        id: currentProyectionId,
-        teachers: JSON.stringify(teachers),
-        subjects: JSON.stringify(subjects),
-        proyections_done: JSON.stringify(proyectionsDone)
-      })
-
-      io.emit('updateTeachers', teachers)
-    })
 
     // Escuchar eventos de actualización de asignaturas
     socket.on('updateSubjects', (newSubjects) => {
@@ -111,40 +76,38 @@ export default function setupSocket (server, sessionMiddleware) {
       } */
 
       // Verificar si el usuario ha iniciado sesión antes de actualizar
-      const user = socket?.request?.session?.user
-      if (!user) {
-        console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
-        socket.disconnect()
-        return
+      if (process.env.NODE_ENV !== 'dev') {
+        const user = socket?.request?.session?.user
+        if (!user) {
+          console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
+          socket.disconnect()
+          return
+        }
       }
 
       subjects = newSubjects
       updateProyection({
         id: currentProyectionId,
         teachers: JSON.stringify(teachers),
-        subjects: JSON.stringify(subjects),
-        proyections_done: JSON.stringify(proyectionsDone)
+        subjects: JSON.stringify(subjects)
+
       })
       io.emit('updateSubjects', subjects)
     })
 
-    // Escuchar eventos de actualización de proyecciones
-    socket.on('proyectionsDone', (newProyections) => {
-      proyectionsDone = newProyections
-      io.emit('proyectionsDone', proyectionsDone)
-    })
-
     socket.on('reload', () => {
-      /*    const user = socket?.request?.session?.user
-      if (!user) {
-        console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
-        socket.disconnect()
-        return
-      } */
+      // Verificar si el usuario ha iniciado sesión antes de actualizar
+      if (process.env.NODE_ENV !== 'dev') {
+        const user = socket?.request?.session?.user
+        if (!user) {
+          console.log('El usuario no ha iniciado sesión antes de actualizar la proyección')
+          socket.disconnect()
+          return
+        }
+      }
       loadProyection().then(() => {
         socket.emit('updateTeachers', teachers)
         socket.emit('updateSubjects', subjects)
-        socket.emit('proyectionsDone', proyectionsDone)
         socket.emit('proyectionData', { proyectionName, proyectionId })
       })
     })

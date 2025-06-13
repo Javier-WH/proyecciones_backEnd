@@ -26,14 +26,6 @@ Proyections.init(
     subjects: {
       type: DataTypes.TEXT('long'),
       allowNull: false
-    },
-    teachers: {
-      type: DataTypes.TEXT('long'),
-      allowNull: false
-    },
-    proyections_done: {
-      type: DataTypes.TEXT('long'),
-      allowNull: false
     }
   },
   {
