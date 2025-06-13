@@ -20,22 +20,20 @@ export default async function createProyection (req, res) {
     })
 
     let subjects = '[]'
-    let teachers = '{ "q1": [], "q2": [], "q3": [] }'
-    let proyections_done = '[]'
+
     if (existingYear) {
       subjects = existingYear?.subjects || '[]'
-      teachers = existingYear?.teachers || '[]'
-      proyections_done = existingYear?.proyections_done || '[]'
     }
 
     // se crea la proyeccion
     const id = uuidv4()
-    await Proyections.create({ id, year, name, subjects, teachers, proyections_done })
+    await Proyections.create({ id, year, name, subjects })
     res.status(201).json({ message: 'Proyeccion creada exitosamente' })
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(400).json({ error: 'Ya existe una proyeccion con ese nombre' })
     }
+    console.error(error)
     res.status(500).json({ error: 'Error al crear la proyection' })
   }
 }
