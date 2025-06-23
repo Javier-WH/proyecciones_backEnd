@@ -16,6 +16,9 @@ import Days from "#models/schedule/days.js";
 import Hours from "#models/schedule/hours.js";
 import Classrooms from "#models/schedule/classrooms.js";
 import Schedule from "#models/schedule/schedule.js";
+import ScheduleConfig from "#models/schedule/scheduleConfig.js";
+import SubjectRestrictions from "#models/schedule/subjectsRestrictions.js";
+import TeachersRestrictions from "#models/schedule/teacherRestrictions.js";
 /*
  * No se debe cambiar el orden de las tablas, ya que se crearía un error de foreign key
  */
@@ -38,6 +41,9 @@ const tableList = [
   Hours,
   Classrooms,
   Schedule,
+  ScheduleConfig,
+  SubjectRestrictions,
+  TeachersRestrictions,
 ];
 
 export default tableList;
