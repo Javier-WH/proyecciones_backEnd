@@ -9,6 +9,11 @@ Hours.init(
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
+    index: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+    },
     hours: {
       type: DataTypes.STRING(50),
       allowNull: false,

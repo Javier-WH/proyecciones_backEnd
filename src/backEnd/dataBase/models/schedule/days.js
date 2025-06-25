@@ -9,6 +9,11 @@ Days.init(
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
+    index: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+    },
     day: {
       type: DataTypes.STRING(50),
       allowNull: false,
