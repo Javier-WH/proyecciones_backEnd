@@ -35,5 +35,20 @@ Router.post("/classroom", express.json(), async (req, res) => {
   }
 });
 
+Router.delete("/classroom/:id", async (req, res) => {
+  const classroomId = req.params.id;
+  try {
+    const classroom = await Classrooms.findOne({ where: { id: classroomId } });
+    if (!classroom) {
+      return res.status(404).json({ error: true, message: "aula de clase no encontrada" });
+    }
+    await Classrooms.destroy({ where: { id: classroomId } });
+    res.status(200).json({ message: "aula de clase eliminada exitosamente" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: true, message: "ocurrio un error al intentar eliminar la aula de clase" });
+  }
+});
+
 export default Router;
 
