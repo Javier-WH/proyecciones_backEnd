@@ -1,6 +1,7 @@
 import express from "express";
 import Classrooms from "#models/schedule/classrooms.js";
 import { v4 as uuidv4 } from "uuid";
+import { Op } from "sequelize";
 const Router = express.Router();
 
 Router.get("/classrooms", async (_, res) => {
@@ -47,6 +48,45 @@ Router.delete("/classroom/:id", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: true, message: "ocurrio un error al intentar eliminar la aula de clase" });
+  }
+});
+
+Router.put("/classroom/:id", express.json(), async (req, res) => {
+  const classroomId = req.params.id;
+  const { classroom } = req.body;
+  if (!classroom) {
+    return res.status(400).json({ error: true, message: "Se requiere un nombre para el aula." });
+  }
+  try {
+    // 1. Verificar si el nombre del aula ya existe en OTRA aula
+    const existingClassroomWithName = await Classrooms.findOne({
+      where: {
+        classroom,
+        id: {
+          [Op.ne]: classroomId,
+        },
+      },
+    });
+
+    if (existingClassroomWithName) {
+      return res.status(409).json({ error: true, message: "Ya existe un aula con ese nombre." });
+    }
+
+    // 2. Intentar actualizar el aula
+    const [updatedRowsCount] = await Classrooms.update({ classroom }, { where: { id: classroomId } });
+
+    if (updatedRowsCount === 0) {
+      return res
+        .status(404)
+        .json({ error: true, message: "No se encontró ningún aula con el ID proporcionado." });
+    }
+
+    res.status(200).json({ message: "Aula actualizada exitosamente." });
+  } catch (error) {
+    console.error("Error al actualizar el aula:", error);
+    res
+      .status(500)
+      .json({ error: true, message: "Ocurrió un error interno al intentar actualizar el aula." });
   }
 });
 
