@@ -200,8 +200,10 @@ export async function updateHoursTable(stepMinutes, initialStartTime, totalSlots
     if (updates.length === 0 && creates.length === 0 && idsToDelete.length === 0) {
       console.log("La tabla de horas ya está actualizada, no se requieren cambios.");
     }
+    return true;
   } catch (error) {
     console.error("Error actualizando la tabla Hours:", error);
+    return false;
   }
 }
 
