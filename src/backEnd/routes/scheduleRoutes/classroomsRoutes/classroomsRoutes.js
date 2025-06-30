@@ -32,7 +32,7 @@ Router.post("/classroom", express.json(), async (req, res) => {
     res.status(201).json({ message: "aula de clase creada exitosamente" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: true, message: "ocurrio un error al intentar crear la aula de clase" });
+    res.status(500).json({ error: true, message: "ocurrió un error al intentar crear la aula de clase" });
   }
 });
 
