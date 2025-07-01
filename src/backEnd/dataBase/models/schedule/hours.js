@@ -16,7 +16,7 @@ Hours.init(
     },
     hours: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
   },

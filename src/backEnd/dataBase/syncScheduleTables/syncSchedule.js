@@ -2,12 +2,6 @@ import Days from "#models/schedule/days.js";
 import Classrooms from "#models/schedule/classrooms.js";
 import Hours from "#models/schedule/hours.js";
 
-const formatTime = (date) => {
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
 async function syncDaysTable() {
   try {
     const days = await Days.findAll({ raw: true });
@@ -102,107 +96,77 @@ async function syncHoursTable() {
   }
 }
 
-/**
- * Actualiza la tabla Hours con nuevas franjas horarias.
- *
- * Este método:
- * 1. Genera las nuevas franjas horarias con la configuración dada.
- * 2. Actualiza los registros existentes si son diferentes.
- * 3. Crea nuevos registros si no existen.
- * 4. Elimina registros sobrantes.
- *
- * @param {number} stepMinutes - La cantidad de minutos que separan cada franja horaria.
- * @param {string} initialStartTime - La hora de inicio en formato HH:MM.
- * @param {number} totalSlots - La cantidad de franjas horarias a generar.
- *
- * @returns {Promise<boolean>} - 'true' si se realizaron cambios en la tabla, 'false' si no hubo cambios.
- */
+// Función para convertir tiempo en minutos
+const timeToMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};
+
+// Función para formatear minutos a HH:mm
+const formatTime = (totalMinutes) => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+};
+
 export async function updateHoursTable(stepMinutes, initialStartTime, totalSlots) {
   try {
+    // Validar parámetros
+    if (typeof stepMinutes !== "number" || stepMinutes <= 0) {
+      console.error("stepMinutes debe ser un número positivo");
+      return false;
+    }
+
+    if (typeof initialStartTime !== "string" || !/^\d{1,2}:\d{2}$/.test(initialStartTime)) {
+      console.error("Formato de hora inicial inválido. Debe ser HH:mm");
+      return false;
+    }
+
+    // Obtener todos los registros ordenados por índice
     const existingHours = await Hours.findAll({
       raw: true,
       order: [["index", "ASC"]],
     });
 
-    const generatedHours = [];
-    let currentTime = new Date();
-    const [startHour, startMinute] = initialStartTime.split(":").map(Number);
-    currentTime.setHours(startHour, startMinute, 0, 0); // Establecer la hora inicial sin afectar la fecha
+    if (existingHours.length === 0) return;
 
-    // 1. Generar las nuevas franjas horarias
-    for (let i = 0; i < totalSlots; i++) {
-      const startTime = new Date(currentTime);
-      currentTime.setMinutes(currentTime.getMinutes() + stepMinutes);
-      const endTime = new Date(currentTime);
+    // Convertir hora inicial a minutos
+    const startMinutes = timeToMinutes(initialStartTime);
 
-      generatedHours.push({
-        index: i + 1, // El index siempre debe ser secuencial empezando en 1
-        hours: `${formatTime(startTime)} - ${formatTime(endTime)}`,
-      });
-    }
+    // Limitar los slots al mínimo entre totalSlots y 24 registros
+    const actualSlots = Math.min(totalSlots, existingHours.length);
 
+    // Preparar las actualizaciones
     const updates = [];
-    const creates = [];
-    const existingIdsToKeep = new Set();
+    let currentStart = startMinutes;
 
-    // 2. Actualizar registros existentes y preparar nuevos para creación
-    for (let i = 0; i < totalSlots; i++) {
-      const newHourData = generatedHours[i];
-      const existingHour = existingHours.find((h) => h.index === newHourData.index);
+    for (let i = 0; i < existingHours.length; i++) {
+      const record = existingHours[i];
+      let newHours = null;
 
-      if (existingHour) {
-        // Si el registro existe y es diferente, prepáralo para actualización
-        if (existingHour.hours !== newHourData.hours) {
-          updates.push({
-            id: existingHour.id, // Mantener el ID existente
-            index: newHourData.index,
-            hours: newHourData.hours,
-          });
-        }
-        existingIdsToKeep.add(existingHour.id);
-      } else {
-        // Si no existe, prepáralo para creación
-        creates.push(newHourData);
+      if (i < actualSlots) {
+        const endMinutes = currentStart + stepMinutes;
+        newHours = `${formatTime(currentStart)} - ${formatTime(endMinutes)}`;
+        currentStart = endMinutes;
+      }
+
+      // Solo actualizar si el valor cambió
+      if (record.hours !== newHours) {
+        updates.push({
+          id: record.id,
+          hours: newHours,
+        });
       }
     }
 
-    // 3. Eliminar registros sobrantes
-    const idsToDelete = existingHours
-      .filter((hour) => !existingIdsToKeep.has(hour.id))
-      .map((hour) => hour.id);
+    // Ejecutar actualizaciones en paralelo
+    await Promise.all(
+      updates.map((update) => Hours.update({ hours: update.hours }, { where: { id: update.id } }))
+    );
 
-    // Ejecutar operaciones en la base de datos
-    if (updates.length > 0) {
-      // Usar un bucle para actualizar individualmente y no perder los IDs
-      for (const updateData of updates) {
-        await Hours.update(
-          { index: updateData.index, hours: updateData.hours },
-          { where: { id: updateData.id } }
-        );
-      }
-      console.log(`Se actualizaron ${updates.length} registros de horas.`);
-    }
-
-    if (creates.length > 0) {
-      await Hours.bulkCreate(creates);
-      console.log(`Se crearon ${creates.length} nuevos registros de horas.`);
-    }
-
-    if (idsToDelete.length > 0) {
-      await Hours.destroy({
-        where: {
-          id: idsToDelete,
-        },
-      });
-      console.log(`Se eliminaron ${idsToDelete.length} registros de horas extra.`);
-    }
-
-    if (updates.length === 0 && creates.length === 0 && idsToDelete.length === 0) {
-      console.log("La tabla de horas ya está actualizada, no se requieren cambios.");
-    }
     return true;
   } catch (error) {
-    console.error("Error actualizando la tabla Hours:", error);
+    console.error("Error updating hours table:", error);
     return false;
   }
 }
@@ -211,6 +175,5 @@ export default function syncSchedule() {
   syncDaysTable();
   syncClassroomsTable();
   syncHoursTable();
-  updateHoursTable(45, "07:00", 24);
 }
 
