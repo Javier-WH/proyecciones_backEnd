@@ -47,6 +47,9 @@ Schedule.init(
     seccion: {
       type: DataTypes.STRING(10),
     },
+    quarter: {
+      type: DataTypes.STRING(10),
+    },
     trayecto_id: {
       type: DataTypes.UUID,
       references: {
@@ -78,16 +81,16 @@ Schedule.init(
     indexes: [
       {
         unique: true,
-        fields: ["hours_id", "teacher_id", "day_id"],
+        fields: ["hours_id", "teacher_id", "day_id", "quarter"],
       },
       {
         unique: true,
-        fields: ["hours_id", "day_id", "classroom_id"],
+        fields: ["hours_id", "day_id", "classroom_id", "quarter"],
       },
-      {
+      /* {
         unique: true,
         fields: ["subject_id", "seccion", "trayecto_id", "turn_id", "pnf_id"],
-      },
+      },*/
     ],
   }
 );
