@@ -55,5 +55,15 @@ Router.post("/schedule", express.json(), async (req, res) => {
   }
 });
 
+Router.delete("/", async (req, res) => {
+  try {
+    await Schedule.destroy({ where: { id: { [Op.ne]: null } } });
+    res.status(200).json({ messages: "Horarios eliminados correctamente" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al intentar eliminar los horarios" });
+  }
+});
+
 export default Router;
 
