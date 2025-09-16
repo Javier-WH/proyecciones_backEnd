@@ -50,14 +50,6 @@ export async function generateExcelReport(req, res) {
     // agrupar las materias por profesor
     const groupedSubjects = groupSubjectsByProfessor(filteredSubjects);
 
-    // agregar materias de otros pnf a los profesores filtrados
-    const wholeSubjects = groupedSubjects.map((subjectIem) => {
-      const teacherId = subjectIem.professorId;
-      //subjects
-    });
-
-    console.log(rawSubjects);
-
     // Obtener los datos de los profesores desde la base de datos
     const teachersIDs = groupedSubjects.map((group) => group.professorId);
     const teachers = await Teachers.findAll({
@@ -95,7 +87,38 @@ export async function generateExcelReport(req, res) {
     });
 
     // agrupar los datos por pnf
-    const groupedByProgram = groupSubjectsByPnfFromProfessorArray(reportData);
+    let groupedByProgram = groupSubjectsByPnfFromProfessorArray(reportData);
+
+    ////////////////////////////////////////////
+    //agrea las materias que el profesor dá en otros pnf
+    //1. se determina que materias tiene ese profesor en otro pnf
+    const missedSubjects = groupedByProgram?.[0].map((subject) => {
+      const teacherId = subject.teacherData.id;
+      const teacherData = subject.teacherData;
+
+      //filtra el pnf para evitar agregar las mismas materias ya agregadas
+      const nonPNFsubjects = rawSubjects
+        .filter((rawSubject) => rawSubject.pnfId !== pnfId)
+        .filter(
+          (rawSubject) =>
+            rawSubject?.quarter?.q1 === teacherId ||
+            rawSubject?.quarter?.q2 === teacherId ||
+            rawSubject?.quarter?.q3 === teacherId
+        )
+        .map((rawSubject) => {
+          rawSubject.teacherData = teacherData;
+          //rawSubject.pnfId = subject.pnfId;
+          //rawSubject.pnf = subject.pnf;
+          return rawSubject;
+        });
+
+      return nonPNFsubjects;
+    });
+
+    // crea un nuevo objeto con todas las materias que da el profesor de todos los pnf
+    const wholeSubjects = [groupedByProgram?.[0], ...missedSubjects.flat()];
+    groupedByProgram = [wholeSubjects.flat()];
+    ////////////////////////////////////
 
     // Crear un nuevo libro de Excel
     const workbook = await XlsxPopulate.fromBlankAsync();
@@ -109,6 +132,7 @@ export async function generateExcelReport(req, res) {
         sheetNumber: 0,
         workbook,
         pnfArray: groupedByProgram,
+        //pnfArray: [wholeSubjects.flat()],
         proyectionDate,
         contracts,
       });
@@ -120,6 +144,7 @@ export async function generateExcelReport(req, res) {
         sheetNumber: 0,
         workbook,
         pnfArray: groupedByProgram,
+        //pnfArray: [wholeSubjects.flat()],
         proyectionDate,
         contracts,
       });
