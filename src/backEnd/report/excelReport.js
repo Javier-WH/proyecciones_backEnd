@@ -107,8 +107,6 @@ export async function generateExcelReport(req, res) {
         )
         .map((rawSubject) => {
           rawSubject.teacherData = teacherData;
-          //rawSubject.pnfId = subject.pnfId;
-          //rawSubject.pnf = subject.pnf;
           return rawSubject;
         });
 
