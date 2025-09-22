@@ -21,7 +21,7 @@ export default async function postTeacher(req, res) {
   if (perfil_name_id) teacherData.perfil_name_id = perfil_name_id;
   if (PNF) teacherData.PNF = PNF;
   if (active) teacherData.active = active;
-  console.log(teacherData);
+
   if (!id) {
     try {
       const id = uuidv4();
