@@ -21,35 +21,35 @@ export default function generateSingleQuarterSheet({
       let row = 1;
       // encabezado
 
-      const rangeLine1 = sheet.range(`A${row}:I${row}`);
+      const rangeLine1 = sheet.range(`A${row}:J${row}`);
       sheet.cell(`A${row}`).value("PERSONAL DOCENTE");
       rangeLine1.merged(true);
       rangeLine1.style("horizontalAlignment", "center");
       rangeLine1.style("verticalAlignment", "center");
       row++;
 
-      const rangeLine2 = sheet.range(`A${row}:I${row}`);
+      const rangeLine2 = sheet.range(`A${row}:J${row}`);
       sheet.cell(`A${row}`).value(`${pnf[0].pnf}`.toUpperCase());
       rangeLine2.merged(true);
       rangeLine2.style("horizontalAlignment", "center");
       rangeLine2.style("verticalAlignment", "center");
       row++;
 
-      const rangeLine3 = sheet.range(`A${row}:I${row}`);
+      const rangeLine3 = sheet.range(`A${row}:J${row}`);
       sheet.cell(`A${row}`).value("U.P.T. DE LOS LLANOS JUANA RAMIREZ, EXTENSIÓN ALTAGRACIA DE ORITUCO");
       rangeLine3.merged(true);
       rangeLine3.style("horizontalAlignment", "center");
       rangeLine3.style("verticalAlignment", "center");
       row++;
 
-      const rangeLine4 = sheet.range(`A${row}:I${row}`);
+      const rangeLine4 = sheet.range(`A${row}:J${row}`);
       sheet.cell(`A${row}`).value(`CARGA ACADÉMICA ${getQuaterName(quarter)}`);
       rangeLine4.merged(true);
       rangeLine4.style("horizontalAlignment", "center");
       rangeLine4.style("verticalAlignment", "center");
       row++;
 
-      const rangeLine5 = sheet.range(`A${row}:I${row}`);
+      const rangeLine5 = sheet.range(`A${row}:J${row}`);
       sheet.cell(`A${row}`).value(proyectionDate);
       rangeLine5.merged(true);
       rangeLine5.style("horizontalAlignment", "center");
@@ -58,7 +58,7 @@ export default function generateSingleQuarterSheet({
       row++;
 
       // encabezado de la tabla
-      const boldHeaderRange = sheet.range(`A${row}:I${row + 1}`);
+      const boldHeaderRange = sheet.range(`A${row}:J${row + 1}`);
       boldHeaderRange.style("bold", true);
 
       const rangeLine6A = sheet.range(`A${row}:A${row + 1}`);
@@ -75,55 +75,63 @@ export default function generateSingleQuarterSheet({
       rangeLine6B.style("verticalAlignment", "center");
       rangeLine6B.style("border", true);
 
-      const rangeLine6C = sheet.range(`C${row}:C${row + 1}`);
-      sheet.cell(`C${row}`).value("Trayecto");
+      // Nueva columna PNF
+      const rangeLine6PNF = sheet.range(`C${row}:C${row + 1}`);
+      sheet.cell(`C${row}`).value("PNF");
+      rangeLine6PNF.merged(true);
+      rangeLine6PNF.style("horizontalAlignment", "center");
+      rangeLine6PNF.style("verticalAlignment", "center");
+      rangeLine6PNF.style("border", true);
+
+      const rangeLine6C = sheet.range(`D${row}:D${row + 1}`);
+      sheet.cell(`D${row}`).value("Trayecto");
       rangeLine6C.merged(true);
       rangeLine6C.style("horizontalAlignment", "center");
       rangeLine6C.style("verticalAlignment", "center");
       rangeLine6C.style("border", true);
 
-      const rangeLine6D = sheet.range(`D${row}:D${row + 1}`);
-      sheet.cell(`D${row}`).value("Sección");
+      const rangeLine6D = sheet.range(`E${row}:E${row + 1}`);
+      sheet.cell(`E${row}`).value("Sección");
       rangeLine6D.merged(true);
       rangeLine6D.style("horizontalAlignment", "center");
       rangeLine6D.style("verticalAlignment", "center");
       rangeLine6D.style("border", true);
 
-      const rangeLine6E = sheet.range(`E${row}:E${row + 1}`);
-      sheet.cell(`E${row}`).value("Turno");
+      const rangeLine6E = sheet.range(`F${row}:F${row + 1}`);
+      sheet.cell(`F${row}`).value("Turno");
       rangeLine6E.merged(true);
       rangeLine6E.style("horizontalAlignment", "center");
       rangeLine6E.style("verticalAlignment", "center");
       rangeLine6E.style("border", true);
 
-      const rangeLine6FG = sheet.range(`F${row}:G${row}`);
-      sheet.cell(`F${row}`).value(getQuaterName(quarter));
+      const rangeLine6FG = sheet.range(`G${row}:H${row}`);
+      sheet.cell(`G${row}`).value(getQuaterName(quarter));
       rangeLine6FG.merged(true);
       rangeLine6FG.style("horizontalAlignment", "center");
       rangeLine6FG.style("verticalAlignment", "center");
       rangeLine6FG.style("border", true);
 
-      sheet.cell(`F${row + 1}`).value("Horas por U/C");
-      sheet.cell(`F${row + 1}`).style("horizontalAlignment", "center");
-      sheet.cell(`F${row + 1}`).style("verticalAlignment", "center");
-      sheet.cell(`F${row + 1}`).style("border", true);
-      sheet.cell(`F${row + 1}`).style("wrapText", true);
-
-      sheet.cell(`G${row + 1}`).value("Total de Horas");
+      sheet.cell(`G${row + 1}`).value("Horas por U/C");
       sheet.cell(`G${row + 1}`).style("horizontalAlignment", "center");
       sheet.cell(`G${row + 1}`).style("verticalAlignment", "center");
       sheet.cell(`G${row + 1}`).style("border", true);
       sheet.cell(`G${row + 1}`).style("wrapText", true);
 
-      const rangeLine6H = sheet.range(`H${row}:H${row + 1}`);
-      sheet.cell(`H${row}`).value("Dedicación");
+      sheet.cell(`H${row + 1}`).value("Total de Horas");
+      sheet.cell(`H${row + 1}`).style("horizontalAlignment", "center");
+      sheet.cell(`H${row + 1}`).style("verticalAlignment", "center");
+      sheet.cell(`H${row + 1}`).style("border", true);
+      sheet.cell(`H${row + 1}`).style("wrapText", true);
+
+      const rangeLine6H = sheet.range(`I${row}:I${row + 1}`);
+      sheet.cell(`I${row}`).value("Dedicación");
       rangeLine6H.merged(true);
       rangeLine6H.style("horizontalAlignment", "center");
       rangeLine6H.style("verticalAlignment", "center");
       rangeLine6H.style("border", true);
 
-      const rangeLine6I = sheet.range(`I${row}:I${row + 1}`);
-      sheet.cell(`I${row}`).value("Observación");
+      const rangeLine6I = sheet.range(`J${row}:J${row + 1}`);
+      sheet.cell(`J${row}`).value("Observación");
       rangeLine6I.merged(true);
       rangeLine6I.style("horizontalAlignment", "center");
       rangeLine6I.style("verticalAlignment", "center");
@@ -151,49 +159,50 @@ export default function generateSingleQuarterSheet({
             contracts.find((contract) => contract.id === teacher.contractTypes_id)?.contractType ||
             "Sin contrato";
 
-          // console.log(subject);
           sheet.cell(`B${row}`).value(subject.subject);
-          sheet.cell(`C${row}`).value(subject.trayectoName);
+          sheet.cell(`C${row}`).value(subject?.pnf?.replace("P.N.F. en ", ""));
           sheet.cell(`C${row}`).style("horizontalAlignment", "center");
-          sheet.cell(`D${row}`).value(`${subject.turnoName[0]}-0${subject.seccion}`);
-          sheet.cell(`E${row}`).value(subject.turnoName);
-          sheet.cell(`F${row}`).value(UCHours);
-          sheet.cell(`F${row}`).style("horizontalAlignment", "center");
-          subjectIndex === 0 && sheet.cell(`G${row}`).value(teacherHours[`q${quarter}`]);
+          sheet.cell(`D${row}`).value(subject.trayectoName);
+          sheet.cell(`D${row}`).style("horizontalAlignment", "center");
+          sheet.cell(`E${row}`).value(`${subject.turnoName[0]}-0${subject.seccion}`);
+          sheet.cell(`F${row}`).value(subject.turnoName);
+          sheet.cell(`G${row}`).value(UCHours);
           sheet.cell(`G${row}`).style("horizontalAlignment", "center");
-          sheet.cell(`H${row}`).value(teacherContractType);
+          subjectIndex === 0 && sheet.cell(`H${row}`).value(teacherHours[`q${quarter}`]);
+          sheet.cell(`H${row}`).style("horizontalAlignment", "center");
+          sheet.cell(`I${row}`).value(teacherContractType);
           sheet.row(row).height(25);
           sheet.row(row).style("verticalAlignment", "center");
           row++;
         }
         const teacherCellRange = sheet.range(`A${initRange}:A${initRange + teacher.load.length - 1}`);
         teacher.load.length > 1 && teacherCellRange.merged(true);
-        // teacherCellRange.style("horizontalAlignment", "center");
         teacherCellRange.style("verticalAlignment", "center");
 
-        const totalHourCellRange = sheet.range(`G${initRange}:G${initRange + teacher.load.length - 1}`);
+        const totalHourCellRange = sheet.range(`H${initRange}:H${initRange + teacher.load.length - 1}`);
         teacher.load.length > 1 && totalHourCellRange.merged(true);
         totalHourCellRange.style("horizontalAlignment", "center");
         totalHourCellRange.style("verticalAlignment", "center");
 
-        const dedicationCellRange = sheet.range(`H${initRange}:H${initRange + teacher.load.length - 1}`);
+        const dedicationCellRange = sheet.range(`I${initRange}:I${initRange + teacher.load.length - 1}`);
         teacher.load.length > 1 && dedicationCellRange.merged(true);
         dedicationCellRange.style("horizontalAlignment", "center");
         dedicationCellRange.style("verticalAlignment", "center");
 
-        const observationCellRange = sheet.range(`I${initRange}:I${initRange + teacher.load.length - 1}`);
+        const observationCellRange = sheet.range(`J${initRange}:J${initRange + teacher.load.length - 1}`);
         teacher.load.length > 1 && observationCellRange.merged(true);
         observationCellRange.style("horizontalAlignment", "center");
         observationCellRange.style("verticalAlignment", "center");
 
-        sheet.range(`A${initRange}:I${row - 1}`).style("border", true);
+        sheet.range(`A${initRange}:J${row - 1}`).style("border", true);
       }
       // ajustar el ancho de las columnas
       sheet.column("A").width(50);
       sheet.column("B").width(50);
       sheet.column("C").width(18);
-      sheet.column("H").width(25);
-      sheet.column("I").width(18);
+      sheet.column("D").width(18);
+      sheet.column("I").width(25);
+      sheet.column("J").width(18);
 
       // ajustar el alto a filas extra
       for (let i = 0; i < 50; i++) {
@@ -237,25 +246,20 @@ function groupSubjectsByTeacher(subjects, quarter) {
 
       // Si el profesor no está en el mapa, agregarlo
       if (!teachersMap[teacherId]) {
-        // Copiar los datos del profesor y agregar un array de carga vacío
         teachersMap[teacherId] = {
           ...teacherData,
           load: [],
         };
       }
 
-      // Agregar la materia a la carga del profesor, excluyendo la data del profesor para evitar recursión/anidamiento excesivo
       const subjectWithoutTeacherData = { ...subject };
       delete subjectWithoutTeacherData.teacherData;
-      // console.log(subject);
       teachersMap[teacherId].load.push(subjectWithoutTeacherData);
     }
   });
 
-  // Convertir el mapa de profesores a un array
   const teachersArray = Object.values(teachersMap);
 
-  // elimina las materias duplicadas
   const cleanTeachersArray = teachersArray.map((teacher) => {
     teacher.load = teacher.load.filter((item, index, self) => {
       const isDuplicate = self.findIndex((obj) => obj.innerId === item.innerId) < index;
@@ -264,7 +268,6 @@ function groupSubjectsByTeacher(subjects, quarter) {
     return teacher;
   });
 
-  // filtra las materias solo del trimestre seleccionado
   const filteredSubjectsByQuarter = cleanTeachersArray.map((profesor) => {
     const load = profesor.load;
     const filteredLoad = load.filter((subject) => subject.quarter?.[`q${quarter}`] === profesor.id);
