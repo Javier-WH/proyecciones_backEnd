@@ -190,7 +190,9 @@ export default function generateTriQuarterSheet({
 
         // console.log(subject);
         sheet.cell(`B${row}`).value(subject.subject);
-        sheet.cell(`C${row}`).value(subject?.pnf?.replace("P.N.F. en ", ""));
+        sheet
+          .cell(`C${row}`)
+          .value(subject?.pnf?.replace("P.N.F. en ", "").replace("P.N.F en ", "").toUpperCase());
         sheet.cell(`C${row}`).style("horizontalAlignment", "center");
         sheet.cell(`D${row}`).value(subject.trayectoName);
         sheet.cell(`D${row}`).style("horizontalAlignment", "center");
@@ -319,3 +321,4 @@ function groupSubjectsByTeacher(subjects, quarter) {
 
   return Object.values(cleanTeachersArray);
 }
+
