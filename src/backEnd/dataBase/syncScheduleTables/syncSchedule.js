@@ -103,10 +103,27 @@ const timeToMinutes = (time) => {
 }
 
 // Función para formatear minutos a HH:mm
-const formatTime = (totalMinutes) => {
+/* const formatTime = (totalMinutes) => {
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+} */
+
+/**
+ * Formatea un objeto Date para obtener la hora en formato HH:MM.
+ * Esta función funcionará correctamente en Windows y Linux.
+ * @param {Date} dateObj El objeto Date a formatear.
+ * @returns {string} La hora formateada (ej: "07:00").
+ */
+const formatTime = (dateObj) => {
+  // Aseguramos que los números tengan 2 dígitos (ej: 7 -> 07)
+  const pad = (num) => String(num).padStart(2, '0')
+
+  // Obtenemos la hora y los minutos del objeto Date
+  const hours = dateObj.getHours()
+  const minutes = dateObj.getMinutes()
+
+  return `${pad(hours)}:${pad(minutes)}`
 }
 
 export async function updateHoursTable (stepMinutes, initialStartTime, totalSlots) {
