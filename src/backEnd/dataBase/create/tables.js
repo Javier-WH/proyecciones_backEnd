@@ -11,12 +11,12 @@ import Turnos from "#models/turnos.js";
 import Proyections from "#models/proyections.js";
 import Config from "#models/config.js";
 import Users from "#models/users.js";
+import Pnf_teacher from "#models/pnf_teacher.js";
 // importación de las tablas de los horarios
 import Days from "#models/schedule/days.js";
 import Hours from "#models/schedule/hours.js";
 import Classrooms from "#models/schedule/classrooms.js";
 import Schedule from "#models/schedule/schedule.js";
-import ScheduleConfig from "#models/schedule/scheduleConfig.js";
 import SubjectRestrictions from "#models/schedule/subjectsRestrictions.js";
 import TeachersRestrictions from "#models/schedule/teacherRestrictions.js";
 /*
@@ -33,6 +33,7 @@ const tableList = [
   Pensum,
   Perfil,
   Teacher,
+  Pnf_teacher,
   Proyections,
   Config,
   Users,
@@ -41,7 +42,6 @@ const tableList = [
   Hours,
   Classrooms,
   Schedule,
-  ScheduleConfig,
   SubjectRestrictions,
   TeachersRestrictions,
 ];
