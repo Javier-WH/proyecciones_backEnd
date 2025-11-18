@@ -4,36 +4,45 @@ import { Op } from "sequelize";
 
 const Router = express.Router();
 
+const checkSchedulePatams = ({ id, name, schedule, proyection_id }, checkId = false) => {
+  if (checkId && !id) {
+    return { error: true, message: "no se suministro un id" };
+  }
+
+  if (!name && !schedule && !proyection_id) {
+    return {
+      error: true,
+      message: "debe suministrar al menos uno de estos datos: name, schedule, proyection_id",
+    };
+  }
+
+  return { error: false };
+};
+
 Router.post("/schedule", express.json(), async (req, res) => {
   try {
-    const inserLlist = req.body.schedule.filter((item) => item.id === undefined);
+    const { id, name, schedule, proyection_id } = req.body;
 
-    if (!inserLlist || inserLlist.length === 0) {
-      return res.status(400).json({ error: "La lista de horarios es obligatoria" });
+    // si no tiene id entonces se inserta
+    if (!id) {
+      const { error, message } = checkSchedulePatams({ name, schedule, proyection_id });
+      if (error) {
+        return res.status(400).json({ error, message });
+      }
+
+      await Schedule.create({ name, schedule, proyection_id });
+      return res.status(201).json({ message: "Horario creado correctamente" });
+    } else {
+      const { error, message } = checkSchedulePatams({ id, name, schedule, proyection_id }, true);
+      if (error) {
+        return res.status(400).json({ error, message });
+      }
+      await Schedule.update({ name, schedule, proyection_id }, { where: { id } });
+      return res.status(200).json({ message: "Horario actualizado correctamente" });
     }
-    await Schedule.bulkCreate(inserLlist);
-    res.status(201).json({ message: "Horarios agregados correctamente" });
   } catch (error) {
-    // Manejo específico para errores de restricción única
-    if (error.name === "SequelizeUniqueConstraintError") {
-      const camposDuplicados = error.errors.map((err) => err.path).join(", ");
-      return res.status(409).json({
-        error: "Conflicto de datos únicos",
-        message: `Ya existen registros con los mismos valores en: ${camposDuplicados}`,
-        detalles: error.errors.map((e) => ({
-          campo: e.path,
-          valor: e.value,
-          mensaje: e.message,
-        })),
-      });
-    }
-
-    // Manejo de otros errores
-    console.error("Error al agregar horarios:", error);
-    res.status(500).json({
-      error: "Error al intentar agregar los horarios",
-      detalle: error.message,
-    });
+    console.error(error);
+    res.status(500).json({ error: "Error al intentar actaulizar o crear el horario" });
   }
 });
 
