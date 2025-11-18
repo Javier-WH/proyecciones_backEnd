@@ -46,14 +46,23 @@ Router.post("/schedule", express.json(), async (req, res) => {
   }
 });
 
-/*
-Router.get("/schedule", async (_, res) => {
+Router.get("/schedule", async (req, res) => {
+  const { id } = req.query;
+
+  if (id) {
+    const schedule = await Schedule.findOne({ where: { id } });
+    if (!schedule) {
+      return res.status(404).json({ error: true, message: "horario no encontrado" });
+    }
+    return res.json(schedule);
+  }
   const schedule = await Schedule.findAll({ raw: true });
   if (schedule.length === 0) {
     return res.status(404).json({ error: true, message: "no se encontraron horarios" });
   }
   res.json(schedule);
 });
+/*
 
 Router.delete("/schedule", async (req, res) => {
   try {
