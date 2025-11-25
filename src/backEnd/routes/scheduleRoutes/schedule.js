@@ -1,6 +1,5 @@
 import express from "express";
 import Schedule from "#models/schedule/schedule.js";
-import { Op } from "sequelize";
 
 const Router = express.Router();
 
