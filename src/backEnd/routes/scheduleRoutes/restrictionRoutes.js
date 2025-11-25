@@ -33,22 +33,28 @@ Router.post("/teacherRestriction", express.json(), async (req, res) => {
   }
 });
 
-/*Router.get("/schedule", async (req, res) => {
-  const { id } = req.query;
+Router.get("/teacherRestriction", async (req, res) => {
+  try {
+    const { teacher_id } = req.query;
 
-  if (id) {
-    const schedule = await Schedule.findOne({ where: { id } });
-    if (!schedule) {
-      return res.status(404).json({ error: true, message: "horario no encontrado" });
+    if (!teacher_id) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Debe suministrar el ID del profesor (teacher_id)" });
     }
-    return res.json(schedule);
+
+    const restriction = await TeachersRestrictions.findOne({ where: { teacher_id } });
+
+    if (!restriction) {
+      return res.status(404).json({ error: true, message: "Restricción no encontrada para el profesor" });
+    }
+
+    return res.json(restriction);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno del servidor al buscar la restricción" });
   }
-  const schedule = await Schedule.findAll({ raw: true });
-  if (schedule.length === 0) {
-    return res.status(404).json({ error: true, message: "no se encontraron horarios" });
-  }
-  res.json(schedule);
-});*/
+});
 
 export default Router;
 
