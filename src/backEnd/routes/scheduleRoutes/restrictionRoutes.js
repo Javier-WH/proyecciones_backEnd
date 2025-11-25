@@ -9,7 +9,9 @@ Router.post("/teacherRestriction", express.json(), async (req, res) => {
     const { teacher_id, restrictions } = req.body;
 
     if (!teacher_id) {
-      return res.status(400).json({ error: true, message: "Debe suministrar un ID para el profesor" });
+      return res
+        .status(400)
+        .json({ error: true, message: "Debe suministrar un ID para el profesor (teacher_id)" });
     }
 
     if (restrictions === undefined || restrictions === null) {
@@ -53,6 +55,37 @@ Router.get("/teacherRestriction", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error interno del servidor al buscar la restricción" });
+  }
+});
+
+Router.post("/subjectRestriction", express.json(), async (req, res) => {
+  try {
+    const { subject_id, restrictions } = req.body;
+
+    if (!subject_id) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Debe suministrar un ID para para la materia (subject_id)" });
+    }
+
+    if (restrictions === undefined || restrictions === null) {
+      return res.status(400).json({ error: true, message: "Debe suministrar las restricciones" });
+    }
+
+    const [_restrictionRecord, created] = await SubjectRestrictions.upsert(
+      { subject_id, restrictions },
+      { where: { subject_id } }
+    );
+
+    const statusCode = created ? 201 : 200;
+    const action = created ? "creó" : "actualizó";
+
+    return res.status(statusCode).json({
+      message: `La restricción de la materia se ${action} correctamente`,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al intentar crear o actualizar una restricción para la materia" });
   }
 });
 

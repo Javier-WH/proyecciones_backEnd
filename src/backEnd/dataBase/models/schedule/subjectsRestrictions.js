@@ -11,6 +11,7 @@ SubjectRestrictions.init(
     },
     subject_id: {
       type: DataTypes.UUID,
+      unique: true,
       references: {
         model: "subjects",
         key: "id",
