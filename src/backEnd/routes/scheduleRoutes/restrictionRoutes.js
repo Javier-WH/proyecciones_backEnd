@@ -89,5 +89,28 @@ Router.post("/subjectRestriction", express.json(), async (req, res) => {
   }
 });
 
+Router.get("/subjectRestriction", async (req, res) => {
+  try {
+    const { subject_id } = req.query;
+
+    if (!subject_id) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Debe suministrar el ID de la materia (subject_id)" });
+    }
+
+    const restriction = await SubjectRestrictions.findOne({ where: { subject_id } });
+
+    if (!restriction) {
+      return res.status(404).json({ error: true, message: "Restricción no encontrada para esta materia" });
+    }
+
+    return res.json(restriction);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error interno del servidor al buscar la restricción" });
+  }
+});
+
 export default Router;
 
