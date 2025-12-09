@@ -9,33 +9,24 @@ TeachersRestrictions.init(
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
-    hours_id: {
+    teacher_id: {
       type: DataTypes.UUID,
+      unique: true,
       references: {
-        model: "hours",
+        model: "teachers",
         key: "id",
       },
     },
-    day_id: {
-      type: DataTypes.UUID,
-      references: {
-        model: "days",
-        key: "id",
-      },
+    restrictions: {
+      type: DataTypes.TEXT,
     },
   },
   {
     sequelize,
-    modelName: "subjects_restrictions",
+    modelName: "teachers_restrictions",
     timestamps: false,
     charset: "utf8mb4",
     collate: "utf8mb4_unicode_ci",
-    indexes: [
-      {
-        unique: true,
-        fields: ["subject_id", "day_id", "classroom_id"],
-      },
-    ],
   }
 );
 
