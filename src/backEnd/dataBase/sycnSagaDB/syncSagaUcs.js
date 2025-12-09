@@ -6,7 +6,7 @@ import Subjects from "#models/subjects.js";
 import Trayecto from "#models/trayecto.js";
 
 export default async function syncSagaUcs() {
-  const sagaSubjects = await fethSubjectAPI();
+  const sagaSubjects = await fethSubjectAPI({ pnfId: '', trayectoId: '', mayaId: '' });
 
   /*console.log(sagaSubjects.filter((item) => item.programa_info.id === 13 && item.trayecto_info.id === 1));*/
 

@@ -1,6 +1,6 @@
 import getApiToken from '#ApiToken'
 
-export default async function fethSubjectAPI({ pnfId = '', trayectoId = '', mayaId = '' }) {
+export default async function fethMayasNames({ pnfSagaId }) {
   const token = await getApiToken()
 
   if (!token) {
@@ -8,7 +8,7 @@ export default async function fethSubjectAPI({ pnfId = '', trayectoId = '', maya
     return null
   }
 
-  const url = `${process.env.API_URL || 'http://0.0.0.0:8000/api/v1'}/ucslist/${pnfId}/${trayectoId}/${mayaId}`
+  const url = `${process.env.API_URL || 'http://0.0.0.0:8000/api/v1'}/maya/${pnfSagaId}`
   const method = 'GET'
   const headers = {
     'Content-Type': 'application/json',
@@ -21,9 +21,9 @@ export default async function fethSubjectAPI({ pnfId = '', trayectoId = '', maya
       console.log(response.status)
       return null
     }
-    const subjectsData = await response.json()
+    const mayasData = await response.json()
 
-    return subjectsData.data ? subjectsData.data : null
+    return mayasData.data ? mayasData.data : null
   } catch (error) {
     console.error(error)
     return null

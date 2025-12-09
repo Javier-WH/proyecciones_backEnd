@@ -6,11 +6,14 @@ import setActiveProyection from '#querys/proyections/setActiveProyection.js'
 import getProyections from '#querys/proyections/getProyection.js'
 import express from 'express'
 import { validateAdminUser } from '#middlewares/middlewares.js'
+import getMayasNames from '#proyeccion/getMayas.js'
 const Router = express.Router()
 
 Router.get('/proyecciones/inscriptionData/:pnf/:trayecto', getInscriptionData)
 
-Router.get('/proyecciones/pensum/:pnf/:trayecto', getPNFPensum)
+Router.get('/proyecciones/pensum/:pnf/:trayecto/:mayaId', getPNFPensum)
+
+Router.get('/proyecciones/mayas/:pnfSagaId', getMayasNames)
 
 Router.get('/proyeccions', getProyections)
 

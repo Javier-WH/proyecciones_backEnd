@@ -1,8 +1,8 @@
 import fethSubjectAPI from '#fetch/fethSubjectsAPI.js'
 import Subjects from '#models/subjects.js'
 
-export default async function sycnSagaSubjects () {
-  const sagaSubjects = await fethSubjectAPI()
+export default async function sycnSagaSubjects() {
+  const sagaSubjects = await fethSubjectAPI({ pnfId: '', trayectoId: '', mayaId: '' })
 
   if (sagaSubjects === null) {
     console.log('No se han podido sincronizar las materias')
