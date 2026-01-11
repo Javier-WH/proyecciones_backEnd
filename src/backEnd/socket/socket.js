@@ -44,13 +44,13 @@ const loadProyection = async () => {
   }
 }
 
-export async function setTeacherList () {
+export async function setTeacherList() {
   const teacherList = await getTeacherList()
   teachers = teacherList
   io?.emit('updateTeachers', teachers)
 }
 
-export default function setupSocket (server, sessionMiddleware) {
+export default function setupSocket(server, sessionMiddleware) {
   io = new Server(server, {
     cors: {
       origin: '*',
@@ -81,11 +81,11 @@ export default function setupSocket (server, sessionMiddleware) {
       }
 
       // verificar que el array de materias tiene el formato correcto
-      const validName = validateSubjectData(newSubjects)
-      if (validName.error) {
-        console.log(validName.error)
-        return
-      }
+      /* const validName = validateSubjectData(newSubjects)
+       if (validName.error) {
+         console.log(validName.error)
+         return
+       }*/
 
       // Actualizar el array de asignaturas para el socket
       subjects = newSubjects
