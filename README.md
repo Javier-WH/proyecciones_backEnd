@@ -47,3 +47,51 @@ El endpoint de autenticación devuelve en `perfil` y `userPerfil` la misma clave
 - `legacy_subject_id` sólo se incluye cuando existe un UUID histórico distinto al identificador normalizado.
 
 El frontend debe comparar perfiles utilizando `subject_id`, que es el mismo que reciben los docentes (`teacher.perfil`).
+
+## Restricciones de disponibilidad por docente
+
+La tabla `teachers_restrictions` almacena un registro por profesor con estos campos:
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `teacher_id` | UUID | FK a `teachers.id` (único). |
+| `restricted_days` | JSON (array<int>) | Días completos bloqueados (1 = lunes … 5 = viernes). |
+| `restricted_hours` | JSON (array<object>) | Bloques `{ day, start, end }` sin traslapes, horas en formato `HH:mm`. |
+| `restrictions` | TEXT | Copia legacy del JSON completo para compatibilidad. |
+
+### Endpoints
+
+- `POST /teacher-restrictions` (requiere sesión de administrador)
+
+```json
+{
+  "teacher_id": "uuid",
+  "restricted_days": [1, 3, 5],
+  "restricted_hours": [
+    { "day": 2, "start": "08:00", "end": "10:00" },
+    { "day": 4, "start": "14:00", "end": "16:00" }
+  ]
+}
+```
+
+Valida existencia del profesor, normaliza horas/días y rechaza traslapes. Respuesta:
+
+```json
+{
+  "message": "Restricciones del profesor guardadas correctamente",
+  "data": {
+    "teacher_id": "uuid",
+    "restricted_days": [1, 3, 5],
+    "restricted_hours": [
+      { "day": 2, "start": "08:00", "end": "10:00" },
+      { "day": 4, "start": "14:00", "end": "16:00" }
+    ]
+  }
+}
+```
+
+- `GET /teacher-restrictions/:teacherId`: devuelve las colecciones normalizadas para precargar el modal. Si no hay datos, responde con arreglos vacíos.
+
+- `GET /teacher-restrictions`: listado completo para auditoría.
+
+Los endpoints legacy de materias (`/subjectRestriction`) se mantienen sin cambios.
