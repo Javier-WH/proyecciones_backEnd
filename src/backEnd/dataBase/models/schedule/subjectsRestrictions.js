@@ -1,5 +1,5 @@
-import sequelize from "#dataBaseConnection";
-import { DataTypes, Model } from "sequelize";
+import sequelize from '#dataBaseConnection'
+import { DataTypes, Model } from 'sequelize'
 
 class SubjectRestrictions extends Model {}
 SubjectRestrictions.init(
@@ -7,28 +7,44 @@ SubjectRestrictions.init(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      defaultValue: DataTypes.UUIDV4
     },
-    subject_id: {
-      type: DataTypes.UUID,
-      unique: true,
+    proyection_id: {
+      type: DataTypes.STRING(36),
+      allowNull: false,
       references: {
-        model: "subjects",
-        key: "id",
-      },
+        model: 'proyections',
+        key: 'id'
+      }
     },
-    restrictions: {
-      type: DataTypes.TEXT,
+    subject_key: {
+      type: DataTypes.STRING(36),
+      allowNull: false
     },
+    subject_name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    classroom_ids: {
+      type: DataTypes.JSON,
+      allowNull: false
+    }
   },
   {
     sequelize,
-    modelName: "subjects_restrictions",
-    timestamps: false,
-    charset: "utf8mb4",
-    collate: "utf8mb4_unicode_ci",
+    modelName: 'subjects_restrictions',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci',
+    indexes: [
+      {
+        unique: true,
+        fields: ['proyection_id', 'subject_key']
+      }
+    ]
   }
-);
+)
 
-export default SubjectRestrictions;
-
+export default SubjectRestrictions

@@ -2,6 +2,8 @@ import express from 'express'
 import SubjectRestrictions from '#models/schedule/subjectsRestrictions.js'
 import TeachersRestrictions from '#models/schedule/teacherRestrictions.js'
 import Teachers from '#models/teachers.js'
+import Proyections from '#models/proyections.js'
+import sequelize from '#dataBaseConnection'
 import { validateAdminUser } from '../../middlewares/middlewares.js'
 
 const Router = express.Router()
@@ -12,6 +14,43 @@ const WORKING_DAY_MAX = 5
 const toMinutes = (time) => {
   const [hours, minutes] = time.split(':').map(Number)
   return hours * 60 + minutes
+}
+
+function normalizeSubjectKey (value) {
+  if (typeof value !== 'string') return null
+  const normalized = value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .slice(0, 36)
+
+  return normalized || null
+}
+
+function normalizeClassroomIds (input) {
+  if (!Array.isArray(input)) return null
+
+  const normalized = [...new Set(input.map((value) => {
+    if (value === null || value === undefined) return ''
+    return value.toString().trim()
+  }))].filter((value) => Boolean(value))
+
+  return normalized.length ? normalized : null
+}
+
+function sanitizeSubjectName (name) {
+  if (typeof name !== 'string') return null
+  const trimmed = name.trim()
+  return trimmed || null
+}
+
+function formatSubjectRestriction (restriction) {
+  return {
+    subject_key: restriction.subject_key,
+    subject_name: restriction.subject_name,
+    classroom_ids: Array.isArray(restriction.classroom_ids) ? restriction.classroom_ids : []
+  }
 }
 
 function normalizeHour (value) {
@@ -197,57 +236,104 @@ Router.get('/teacher-restrictions', async (_req, res) => {
   }
 })
 
-Router.post('/subjectRestriction', express.json(), async (req, res) => {
+Router.get('/subject-restrictions/:proyectionId', async (req, res) => {
   try {
-    const { subject_id: subjectId, restrictions } = req.body
+    const { proyectionId } = req.params
 
-    if (!subjectId) {
-      return res
-        .status(400)
-        .json({ error: true, message: 'Debe suministrar un ID para para la materia (subject_id)' })
+    if (!proyectionId) {
+      return res.status(400).json({ error: true, message: 'Debe suministrar el ID de la proyección' })
     }
 
-    if (restrictions === undefined || restrictions === null) {
-      return res.status(400).json({ error: true, message: 'Debe suministrar las restricciones' })
+    const proyection = await Proyections.findByPk(proyectionId, { attributes: ['id'], raw: true })
+    if (!proyection) {
+      return res.status(404).json({ error: true, message: 'La proyección indicada no existe' })
     }
 
-    const [, created] = await SubjectRestrictions.upsert(
-      { subject_id: subjectId, restrictions },
-      { where: { subject_id: subjectId } }
-    )
-
-    const statusCode = created ? 201 : 200
-    const action = created ? 'creó' : 'actualizó'
-
-    return res.status(statusCode).json({
-      message: `La restricción de la materia se ${action} correctamente`
+    const restrictions = await SubjectRestrictions.findAll({
+      where: { proyection_id: proyectionId },
+      attributes: ['subject_key', 'subject_name', 'classroom_ids'],
+      raw: true
     })
+
+    return res.json({ restrictions: restrictions.map(formatSubjectRestriction) })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Error al intentar crear o actualizar una restricción para la materia' })
+    res.status(500).json({ error: true, message: 'Error interno del servidor al consultar las restricciones' })
   }
 })
 
-Router.get('/subjectRestriction', async (req, res) => {
+Router.post('/subject-restrictions', validateAdminUser, express.json(), async (req, res) => {
   try {
-    const { subject_id: subjectId } = req.query
+    const { proyection_id: proyectionId, restrictions } = req.body || {}
 
-    if (!subjectId) {
-      return res
-        .status(400)
-        .json({ error: true, message: 'Debe suministrar el ID de la materia (subject_id)' })
+    if (!proyectionId) {
+      return res.status(400).json({ error: true, message: 'El campo proyection_id es requerido' })
     }
 
-    const restriction = await SubjectRestrictions.findOne({ where: { subject_id: subjectId } })
-
-    if (!restriction) {
-      return res.status(404).json({ error: true, message: 'Restricción no encontrada para esta materia' })
+    const proyection = await Proyections.findByPk(proyectionId, { attributes: ['id'], raw: true })
+    if (!proyection) {
+      return res.status(404).json({ error: true, message: 'La proyección indicada no existe' })
     }
 
-    return res.json(restriction)
+    if (!Array.isArray(restrictions)) {
+      return res.status(400).json({
+        error: true,
+        message: 'El campo restrictions debe ser un arreglo de materias'
+      })
+    }
+
+    const normalizedRestrictions = []
+
+    for (const restriction of restrictions) {
+      const subjectKeyInput = restriction?.subject_key ?? restriction?.subjectKey ?? restriction?.subject
+      const subjectNameInput = restriction?.subject_name ?? restriction?.subjectName ?? ''
+      const classroomIdsInput = restriction?.classroom_ids ?? restriction?.classroomIds
+
+      const subjectKey = normalizeSubjectKey(subjectKeyInput)
+      if (!subjectKey) {
+        return res.status(400).json({
+          error: true,
+          message: 'Cada restricción debe incluir un subject_key válido (36 caracteres, sin espacios)'
+        })
+      }
+
+      const subjectName = sanitizeSubjectName(subjectNameInput) ?? subjectKeyInput ?? subjectKey
+
+      const classroomIds = normalizeClassroomIds(classroomIdsInput)
+      if (!classroomIds) {
+        return res.status(400).json({
+          error: true,
+          message: 'Cada restricción debe incluir classroom_ids como arreglo con al menos un ID de aula'
+        })
+      }
+
+      normalizedRestrictions.push({
+        proyection_id: proyectionId,
+        subject_key: subjectKey,
+        subject_name: subjectName,
+        classroom_ids: classroomIds
+      })
+    }
+
+    const transaction = await sequelize.transaction()
+    try {
+      await SubjectRestrictions.destroy({ where: { proyection_id: proyectionId }, transaction })
+      if (normalizedRestrictions.length > 0) {
+        await SubjectRestrictions.bulkCreate(normalizedRestrictions, { transaction })
+      }
+      await transaction.commit()
+    } catch (error) {
+      await transaction.rollback()
+      throw error
+    }
+
+    return res.json({
+      message: 'Restricciones de materias actualizadas correctamente',
+      restrictions: normalizedRestrictions.map(formatSubjectRestriction)
+    })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Error interno del servidor al buscar la restricción' })
+    res.status(500).json({ error: true, message: 'Error al intentar actualizar las restricciones de materias' })
   }
 })
 

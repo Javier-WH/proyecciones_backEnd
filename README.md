@@ -95,3 +95,52 @@ Valida existencia del profesor, normaliza horas/días y rechaza traslapes. Respu
 - `GET /teacher-restrictions`: listado completo para auditoría.
 
 Los endpoints legacy de materias (`/subjectRestriction`) se mantienen sin cambios.
+
+## Restricciones de aulas por materia
+
+La entidad `subjects_restrictions` almacena las aulas permitidas para cada materia dentro de una proyección específica:
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `proyection_id` | CHAR(36) | ID de la proyección. |
+| `subject_key` | CHAR(36) | Nombre normalizado (lowercase, sin tildes ni espacios). |
+| `subject_name` | VARCHAR | Nombre original para mostrar. |
+| `classroom_ids` | JSON (array<string>) | IDs de las aulas habilitadas. |
+| `created_at` / `updated_at` | DATETIME | Timestamps automáticos. |
+
+### Endpoints
+
+- `GET /subject-restrictions/:proyectionId`
+
+```json
+{
+  "restrictions": [
+    {
+      "subject_key": "redesavanzadas",
+      "subject_name": "Redes Avanzadas",
+      "classroom_ids": ["lab-1", "lab-2"]
+    }
+  ]
+}
+```
+
+Si no hay datos, responde `200` con `restrictions: []`.
+
+- `POST /subject-restrictions` (requiere admin)
+
+```json
+{
+  "proyection_id": "uuid",
+  "restrictions": [
+    {
+      "subject_key": "redesavanzadas",
+      "subject_name": "Redes Avanzadas",
+      "classroom_ids": ["lab-1", "lab-2"]
+    }
+  ]
+}
+```
+
+Valida que la proyección exista, normaliza `subject_key`, exige `classroom_ids` con al menos un ID y reemplaza completamente las restricciones previas de esa proyección.
+
+Errores siempre responden `{ "error": true, "message": "detalle" }` con `400` (datos inválidos), `404` (proyección inexistente) o `500` para fallas internas.
