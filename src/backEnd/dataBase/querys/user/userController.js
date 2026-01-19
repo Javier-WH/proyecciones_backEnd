@@ -5,6 +5,10 @@ import Pensum from '#models/pensum.js'
 import { createUser } from './userAux/userAux.js'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcrypt'
+import {
+  getSubjectProfileMaps,
+  resolveSubjectMetadata
+} from '#utils/subjectProfile.js'
 
 const saltRounds = 10
 
@@ -78,11 +82,27 @@ export async function loginUserController (req, res) {
         raw: true
       })
 
-      const perfil = requestPensum.map((item) => item.subject_id)
+      const maps = await getSubjectProfileMaps()
+      const perfilRecords = requestPensum.map((item) => {
+        const metadata = resolveSubjectMetadata(item.subject_id, maps)
+        const normalizedId = metadata.normalizedId || item.subject_id
+
+        return {
+          subject_id: normalizedId,
+          subject_name: metadata.subjectName || item.subject_id,
+          legacy_subject_id:
+            metadata.legacyId && metadata.legacyId !== normalizedId
+              ? metadata.legacyId
+              : null
+        }
+      })
+
+      const perfil = [...new Set(perfilRecords.map((record) => record.subject_id))]
       res.status(200).json({
         message: 'Inicio de sesión exitoso',
         pnf_id,
         perfil,
+        userPerfil: perfilRecords,
         userData
       })
     })

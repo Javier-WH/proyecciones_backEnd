@@ -10,7 +10,8 @@
     "mock": "node ./src/dev/CLI/mockData.js",
     "db:drop": "node ./src/dev/CLI/syncTables.js db:drop",
     "db:create": "node ./src/dev/CLI/syncTables.js db:create",
-    "db:sync": "node ./src/dev/CLI/syncTables.js db:sync"
+    "db:sync": "node ./src/dev/CLI/syncTables.js db:sync",
+    "profiles:migrate": "node ./src/dev/CLI/migrateSubjectProfiles.js"
   },
   "imports": {
     "#models/*": "./src/backEnd/dataBase/models/*",

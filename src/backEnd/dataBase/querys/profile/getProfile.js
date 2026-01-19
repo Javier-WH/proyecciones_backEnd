@@ -1,6 +1,6 @@
 import Profile from '#models/perfil.js'
 import ProfileNames from '#models/perfilNames.js'
-import Subjects from '#models/subjects.js'
+import { formatPerfilRecords } from '#utils/subjectProfile.js'
 import { Sequelize } from 'sequelize'
 
 async function getProfile (active = 1) {
@@ -9,8 +9,8 @@ async function getProfile (active = 1) {
       'id',
       'perfil_name_id',
       'subject_id',
-      [Sequelize.col('perfil_name.name'), 'perfil_name'],
-      [Sequelize.col('subject.name'), 'subject_name']
+      'subject_name',
+      [Sequelize.col('perfil_name.name'), 'perfil_name']
     ],
     raw: true,
     nest: true,
@@ -19,14 +19,9 @@ async function getProfile (active = 1) {
         model: ProfileNames,
         attributes: [],
         as: 'perfil_name'
-      },
-      {
-        model: Subjects,
-        attributes: [],
-        as: 'subject'
       }
     ]
   })
-  return result
+  return await formatPerfilRecords(result)
 }
 export default getProfile
