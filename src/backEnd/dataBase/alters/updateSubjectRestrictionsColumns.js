@@ -1,79 +1,80 @@
-import sequelize from '#dataBaseConnection'
-import { DataTypes } from 'sequelize'
+import sequelize from "#dataBaseConnection";
+import { DataTypes } from "sequelize";
 
-const queryInterface = sequelize.getQueryInterface()
-const TABLE_NAME = 'subjects_restrictions'
-const UNIQUE_INDEX_NAME = 'subjects_restrictions_proyection_subject_key'
+const queryInterface = sequelize.getQueryInterface();
+const TABLE_NAME = "subjects_restrictions";
+const UNIQUE_INDEX_NAME = "subjects_restrictions_proyection_subject_key";
 
-async function ensureColumn (tableInfo, columnName, definition) {
-  const exists = Boolean(tableInfo[columnName])
+async function ensureColumn(tableInfo, columnName, definition) {
+  const exists = Boolean(tableInfo[columnName]);
   if (!exists) {
-    await queryInterface.addColumn(TABLE_NAME, columnName, definition)
+    await queryInterface.addColumn(TABLE_NAME, columnName, definition);
   } else {
-    await queryInterface.changeColumn(TABLE_NAME, columnName, definition)
+    await queryInterface.changeColumn(TABLE_NAME, columnName, definition);
   }
 }
 
-export default async function updateSubjectRestrictionsColumns () {
+export default async function updateSubjectRestrictionsColumns() {
   try {
-    const tableExists = await queryInterface.describeTable(TABLE_NAME).catch(() => null)
+    const tableExists = await queryInterface.describeTable(TABLE_NAME).catch(() => null);
     if (!tableExists) {
-      return
+      return;
     }
 
-    await queryInterface.bulkDelete(TABLE_NAME, {})
+    await queryInterface.bulkDelete(TABLE_NAME, {});
 
-    const tableInfo = await queryInterface.describeTable(TABLE_NAME)
+    const tableInfo = await queryInterface.describeTable(TABLE_NAME);
 
     if (tableInfo.subject_id) {
-      await queryInterface.removeColumn(TABLE_NAME, 'subject_id')
+      await queryInterface.removeColumn(TABLE_NAME, "subject_id");
     }
     if (tableInfo.restrictions) {
-      await queryInterface.removeColumn(TABLE_NAME, 'restrictions')
+      await queryInterface.removeColumn(TABLE_NAME, "restrictions");
     }
 
-    await ensureColumn(tableInfo, 'proyection_id', {
-      type: DataTypes.STRING(36),
-      allowNull: false
-    })
+    await ensureColumn(tableInfo, "proyection_id", {
+      type: DataTypes.UUID,
+      allowNull: false,
+    });
 
-    await ensureColumn(tableInfo, 'subject_key', {
+    await ensureColumn(tableInfo, "subject_key", {
       type: DataTypes.STRING(36),
-      allowNull: false
-    })
+      allowNull: false,
+    });
 
-    await ensureColumn(tableInfo, 'subject_name', {
+    await ensureColumn(tableInfo, "subject_name", {
       type: DataTypes.STRING,
-      allowNull: false
-    })
+      allowNull: false,
+    });
 
-    await ensureColumn(tableInfo, 'classroom_ids', {
+    await ensureColumn(tableInfo, "classroom_ids", {
       type: DataTypes.JSON,
-      allowNull: false
-    })
+      allowNull: false,
+    });
 
-    await ensureColumn(tableInfo, 'created_at', {
+    await ensureColumn(tableInfo, "created_at", {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    })
+      defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+    });
 
-    await ensureColumn(tableInfo, 'updated_at', {
+    await ensureColumn(tableInfo, "updated_at", {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
-    })
+      defaultValue: sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
+    });
 
-    const indexes = await queryInterface.showIndex(TABLE_NAME)
-    const hasUniqueIndex = indexes.some((index) => index.name === UNIQUE_INDEX_NAME)
+    const indexes = await queryInterface.showIndex(TABLE_NAME);
+    const hasUniqueIndex = indexes.some((index) => index.name === UNIQUE_INDEX_NAME);
 
     if (!hasUniqueIndex) {
-      await queryInterface.addIndex(TABLE_NAME, ['proyection_id', 'subject_key'], {
+      await queryInterface.addIndex(TABLE_NAME, ["proyection_id", "subject_key"], {
         unique: true,
-        name: UNIQUE_INDEX_NAME
-      })
+        name: UNIQUE_INDEX_NAME,
+      });
     }
   } catch (error) {
-    console.error('Error al actualizar la tabla subjects_restrictions:', error)
+    console.error("Error al actualizar la tabla subjects_restrictions:", error);
   }
 }
+
