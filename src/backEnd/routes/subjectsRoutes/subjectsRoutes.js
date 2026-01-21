@@ -1,20 +1,28 @@
-import deletePensum from '#querys/subjects/deletePensum.js'
-import { getSimpleSubjectList } from '#querys/subjects/getSimpleSubjectList.js'
-import postPensum from '#querys/subjects/postPensum.js'
-import postSubject from '#querys/subjects/postSubject.js'
-import express from 'express'
-import { validateAdminUser } from '#middlewares/middlewares.js'
-const Router = express.Router()
+import deletePensum from "#querys/subjects/deletePensum.js";
+import { getSimpleSubjectList } from "#querys/subjects/getSimpleSubjectList.js";
+import postPensum from "#querys/subjects/postPensum.js";
+import postSubject from "#querys/subjects/postSubject.js";
+import express from "express";
+import { validateAdminUser } from "#middlewares/middlewares.js";
+const Router = express.Router();
 
-Router.get('/subjects', async (_, res) => {
-  const subjects = await getSimpleSubjectList()
-  res.json(subjects)
-})
+Router.get("/subjects", async (req, res) => {
+  const { pnfId, trayectoId, mayaId } = req.query;
 
-Router.post('/subject', validateAdminUser, express.json(), postSubject)
+  if (!pnfId || !trayectoId || mayaId === undefined || mayaId === null) {
+    res.status(400).json({ error: true, message: "Se requieren pnfId, trayectoId y mayaId" });
+    return;
+  }
 
-Router.post('/pensum', validateAdminUser, express.json(), postPensum)
+  const subjects = await getSimpleSubjectList({ pnfId, trayectoId, mayaId });
+  res.json(subjects);
+});
 
-Router.delete('/pensum/:id', validateAdminUser, deletePensum)
+Router.post("/subject", validateAdminUser, express.json(), postSubject);
 
-export default Router
+Router.post("/pensum", validateAdminUser, express.json(), postPensum);
+
+Router.delete("/pensum/:id", validateAdminUser, deletePensum);
+
+export default Router;
+
