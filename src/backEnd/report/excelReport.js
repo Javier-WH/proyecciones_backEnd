@@ -55,7 +55,11 @@ export async function generateExcelReport(req, res) {
     const teachersIDs = groupedSubjects.map((group) => group.professorId)
     const teachers = await Teachers.findAll({
       where: {
-        id: teachersIDs
+        id: teachersIDs,
+        [Op.and]: [
+          { name: { [Op.notLike]: '%SIN PROFESOR%' } },
+          { last_name: { [Op.notLike]: '%SIN PROFESOR%' } }
+        ]
       },
       raw: true
     })
