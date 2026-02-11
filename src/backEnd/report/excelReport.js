@@ -7,7 +7,7 @@ import generateTriQuarterSheet from './triQuarterSheet copy.js'
 import Contracts from '#models/contractType.js'
 import { Op } from 'sequelize'
 
-export async function generateExcelReport (req, res) {
+export async function generateExcelReport(req, res) {
   const { pnfId, type } = req.body
   if (!pnfId) {
     return res.status(400).json({ message: 'El ID del PNF es requerido' })
@@ -40,7 +40,7 @@ export async function generateExcelReport (req, res) {
     if (!proyection.subjects) {
       return res.status(404).json({ message: 'No se encontraron materias en la proyección' })
     }
-    const rawSubjects = JSON.parse(proyection.subjects)
+    const rawSubjects = JSON.parse(proyection.subjects).filter(subject => !subject.linkedToSection)
 
     // agrupar materias por pnf
     const filteredSubjects = rawSubjects.filter((subject) => subject.pnfId === pnfId)
@@ -55,7 +55,7 @@ export async function generateExcelReport (req, res) {
     const teachersIDs = groupedSubjects.map((group) => group.professorId)
     const teachers = await Teachers.findAll({
       where: {
-        [Op.or]: [{ id: teachersIDs }, { PNF: pnfId }]
+        id: teachersIDs
       },
       raw: true
     })
@@ -187,7 +187,7 @@ export async function generateExcelReport (req, res) {
   }
 }
 
-function groupSubjectsByProfessor (subjects) {
+function groupSubjectsByProfessor(subjects) {
   const professorsMap = {}
 
   subjects.forEach((subject) => {
@@ -219,7 +219,7 @@ function groupSubjectsByProfessor (subjects) {
   return Object.values(professorsMap)
 }
 
-function groupSubjectsByPnfFromProfessorArray (professorsWithSubjects) {
+function groupSubjectsByPnfFromProfessorArray(professorsWithSubjects) {
   const pnfSubjectsMap = {} // Map to hold arrays of subjects, grouped by PNF
 
   // Iterate through each professor's data (which includes teacherData)
@@ -256,7 +256,7 @@ function groupSubjectsByPnfFromProfessorArray (professorsWithSubjects) {
   return Object.values(pnfSubjectsMap)
 }
 
-function formatQuarterDateRange (dateString) {
+function formatQuarterDateRange(dateString) {
   const date = new Date(dateString)
 
   // Check if the date is valid
